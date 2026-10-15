@@ -102,5 +102,28 @@ def build() -> dict[str, dict]:
     return sc
 
 
+EN = {
+    "healthy": ("Healthy SO-101", "baseline"),
+    "chain_break": ("Broken daisy chain", "LeRobot #3131 etc. — follower disconnects when several joints move"),
+    "missing_one": ("One motor silent", "LeRobot #605, Pollen forum — one motor missing from the bus"),
+    "weak_supply": ("Supply sags under load", "Arduino forum — servos run from the board's 5 V pin or a weak adapter"),
+    "overvoltage": ("Over-voltage protection", "Reachy Mini #589 — 7.59 V into motors limited to 7.0 V"),
+    "wrong_supply": ("12 V adapter on 7.4 V servos", "Arduino forum — over-rated voltage, smoking servo"),
+    "chain_drop": ("Voltage falls along the chain", "loose connectors, thin cables (many power/wiring cases)"),
+    "hot_outlier": ("One servo much hotter", "ROBOTIS forum — one motor 10°C+ hotter at the same current"),
+    "bad_limits": ("Bad position limits", "Pollen forum — wrong internal limits stopped a joint at -20°"),
+    "calibration": ("Calibration wrap / out of range", "LeRobot #3193 (wrist roll at 0/4095) · #1026 (loose horn)"),
+    "gripper_squeeze": ("Gripper squeezing an object", "LeRobot #2819 — gripper kept closing on an object, servo broke"),
+}
+
+
+def heading(scenario: dict, lang: str) -> str:
+    if lang == "en":
+        title, case = EN[scenario["name"]]
+    else:
+        title, case = scenario["title"], scenario["case"]
+    return f"{title}  ({case})"
+
+
 def make_bus(scenario: dict) -> FakeBus:
     return FakeBus(deepcopy(scenario["motors"]), deepcopy(scenario["hold_effects"]))

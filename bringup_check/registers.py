@@ -43,14 +43,7 @@ SNAPSHOT_REGS = [
 MODEL_NAMES = {777: "STS3215", 2825: "STS3250", 11272: "SM8512BL"}
 
 # Bits of the Status register (address 65), lowest bit first.
-STATUS_BITS = [
-    ("voltage", "전압 이상"),
-    ("sensor", "센서(엔코더) 이상"),
-    ("temperature", "과열"),
-    ("current", "과전류"),
-    ("angle", "각도 범위 이상"),
-    ("overload", "과부하"),
-]
+STATUS_BITS = ["voltage", "sensor", "temperature", "current", "angle", "overload"]
 
 POSITION_RESOLUTION = 4096
 
@@ -74,5 +67,5 @@ def load_percent(raw: int) -> float:
     return sign_magnitude(raw, 10) / 10.0
 
 
-def decode_status(raw: int) -> list[tuple[str, str]]:
+def decode_status(raw: int) -> list[str]:
     return [bit for i, bit in enumerate(STATUS_BITS) if raw & (1 << i)]

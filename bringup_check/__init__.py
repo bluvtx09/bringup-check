@@ -1,3 +1,3 @@
 """bringup-check: setup diagnostics for Feetech serial-bus servo robots (SO-100/SO-101 and similar)."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from .messages import t
 from .registers import REG
 
 
@@ -34,15 +35,17 @@ class FeetechBus:
         try:
             import scservo_sdk as scs  # type: ignore
         except ImportError as e:  # pragma: no cover - depends on the user's machine
-            raise BusError(
-                "scservo_sdk가 없습니다. `pip install feetech-servo-sdk` 후 다시 실행하세요."
-            ) from e
+            raise BusError(t("bus.err.sdk")) from e
         self._scs = scs
         self._port = scs.PortHandler(port)
-        if not self._port.openPort():
-            raise BusError(f"포트 {port}를 열 수 없습니다. 포트 이름과 USB 연결을 확인하세요.")
+        try:  # the real SDK raises serial.SerialException rather than returning False
+            opened = self._port.openPort()
+        except Exception as e:
+            raise BusError(t("bus.err.port", port=port)) from e
+        if not opened:
+            raise BusError(t("bus.err.port", port=port))
         if not self._port.setBaudRate(baudrate):
-            raise BusError(f"통신 속도 {baudrate}를 설정할 수 없습니다.")
+            raise BusError(t("bus.err.baud", baud=baudrate))
         self._ph = scs.PacketHandler(0)  # STS/SMS series use protocol 0
         self.last_error: dict[int, int] = {}
 

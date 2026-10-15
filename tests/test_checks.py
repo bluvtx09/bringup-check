@@ -3,7 +3,15 @@ import pytest
 from bringup_check.checks import PROBLEM, SO101_NAMES, WARN, run_hold_test, take_snapshot
 from bringup_check.cli import diagnose, main
 from bringup_check.registers import decode_status, load_percent, milliamps, sign_magnitude, volts
+from bringup_check.messages import set_lang
 from bringup_check.scenarios import build, make_bus
+
+
+@pytest.fixture(autouse=True)
+def korean_output():
+    set_lang("ko")
+    yield
+    set_lang("ko")
 
 SCENARIOS = build()
 IDS = [1, 2, 3, 4, 5, 6]
@@ -22,7 +30,7 @@ def test_unit_conversions():
     assert sign_magnitude(0b100_0000_0101, 10) == -5
     assert load_percent(850) == pytest.approx(85.0)
     assert load_percent(1024 + 300) == pytest.approx(-30.0)
-    assert [b[0] for b in decode_status(0b100001)] == ["voltage", "overload"]
+    assert decode_status(0b100001) == ["voltage", "overload"]
 
 
 def test_healthy_robot_has_no_problems_or_warnings():
