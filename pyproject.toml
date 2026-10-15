@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bringup-check"
+version = "0.1.0"
+description = "Setup diagnostics for Feetech serial-bus servo robots (SO-100/SO-101)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+hardware = ["feetech-servo-sdk"]
+test = ["pytest"]
+
+[project.scripts]
+bringup-check = "bringup_check.cli:main"
+
+[tool.setuptools]
+packages = ["bringup_check"]
