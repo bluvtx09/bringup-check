@@ -95,6 +95,14 @@ bringup-check --guard-demo
 
 Tested against LeRobot 0.6.1's own config parsing, robot factory and `send_action`, with the serial bus replaced by a simple servo model. **Not yet tested on a physical arm**; thresholds are starting points. Each cycle adds two bus reads (a few ms).
 
+### Validate it on your arm (10 minutes, follower only — no leader needed)
+
+```bash
+so101-guard-validate --port /dev/ttyACM0 --id my_arm
+```
+
+Four guided tests: a gentle **sweep** and a stretched-out **hold** (the guard must stay out), the **wrist pushing into a book** and the **gripper squeezing a sponge** (it must step in). Positions are taught by hand with torque off, so nothing assumes which way is down; every move is speed-limited. It prints PASS/FAIL per test and saves a CSV — attaching that CSV to an issue is the single most useful thing you can do for this project. `bringup-check --analyze-log file.csv` summarises any guard log.
+
 ## Please share your result
 
 The thresholds are starting points taken from public reports, **not yet validated on real robots**. If you run it on your robot — healthy or not — please open an issue with:

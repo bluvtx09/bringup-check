@@ -24,6 +24,8 @@ from .config_so101_follower_guarded import SO101FollowerGuardedConfig
 
 logger = logging.getLogger(__name__)
 
+LOG_COLUMNS = ["t", "motor", "goal", "sent", "present", "load", "temp", "released", "strain", "event", "mark", "mode"]
+
 
 class SO101FollowerGuarded(_Base):
     """Keeps the parent's `name`, so the existing calibration file is reused."""
@@ -44,6 +46,9 @@ class SO101FollowerGuarded(_Base):
         self._read_failed = False
         self._log_file = None
         self._log = None
+        self._t0: float | None = None
+        self.log_mark = ""  # free-text label written to the log, e.g. the current test phase
+        self._clock = time.perf_counter  # replaceable in tests
 
     # --- bus reads ------------------------------------------------------------------
     def _read(self, data_name: str, normalize: bool = True) -> dict:
@@ -67,16 +72,23 @@ class SO101FollowerGuarded(_Base):
             path.parent.mkdir(parents=True, exist_ok=True)
             self._log_file = path.open("w", newline="", encoding="utf-8")
             self._log = csv.writer(self._log_file)
-            self._log.writerow(["t", "motor", "goal", "sent", "present", "load", "temp", "released", "strain"])
+            self._log.writerow(LOG_COLUMNS)
 
-    def _write_log(self, now, goals, sent, readings) -> None:
+    def _write_log(self, now, goals, sent, readings, events) -> None:
         if self._log is None:
             return
+        if self._t0 is None:
+            self._t0 = now
+        kinds: dict[str, list[str]] = {}
+        for e in events:
+            kinds.setdefault(e.motor, []).append(e.kind)
         for m, r in readings.items():
             st = self.guard.state.get(m)
-            self._log.writerow([f"{now:.3f}", m, f"{goals.get(m, float('nan')):.2f}", f"{sent.get(m, float('nan')):.2f}",
-                                f"{r.present:.2f}", f"{r.load:.1f}", "" if r.temp is None else f"{r.temp:.0f}",
-                                int(bool(st and st.released)), f"{st.strain:.2f}" if st else "0"])
+            self._log.writerow([f"{now - self._t0:.3f}", m, f"{goals.get(m, float('nan')):.2f}",
+                                f"{sent.get(m, float('nan')):.2f}", f"{r.present:.2f}", f"{r.load:.1f}",
+                                "" if r.temp is None else f"{r.temp:.0f}", int(bool(st and st.released)),
+                                f"{st.strain:.2f}" if st else "0", "|".join(kinds.get(m, [])), self.log_mark,
+                                self.config.guard_mode])
         if self._cycle % 30 == 0:
             self._log_file.flush()
 
@@ -87,7 +99,7 @@ class SO101FollowerGuarded(_Base):
         logger.info("Overload guard active (mode=%s)", self.config.guard_mode)
 
     def send_action(self, action):
-        now = time.perf_counter()
+        now = self._clock()
         dt = 1 / 30 if self._last_t is None else now - self._last_t
         self._last_t = now
         goals = {k.removesuffix(".pos"): float(v) for k, v in action.items() if k.endswith(".pos")}
@@ -105,7 +117,7 @@ class SO101FollowerGuarded(_Base):
         for e in events:  # printed so they show up next to lerobot-teleoperate's live readout
             print(e.message, flush=True)
             logger.debug("guard event %s %s %s", e.kind, e.motor, e.data)
-        self._write_log(now, goals, sent, readings)
+        self._write_log(now, goals, sent, readings, events)
 
         new_action = dict(action)
         new_action.update({f"{m}.pos": v for m, v in sent.items()})

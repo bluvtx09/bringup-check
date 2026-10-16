@@ -101,6 +101,7 @@ def test_squeezing_gripper_is_eased_then_follows_again(tmp_path, capsys):
     assert "light grip" in out and "following the leader again" in out
     rows = list(csv.reader(log.open()))
     assert rows[0][:3] == ["t", "motor", "goal"] and len(rows) == 1 + 8 * 30 * 6
+    assert any(r[1] == "gripper" and "light_hold" in r[9] for r in rows[1:])
 
 
 def test_warn_mode_never_changes_the_action(tmp_path):

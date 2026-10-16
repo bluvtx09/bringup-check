@@ -88,6 +88,7 @@ def main(argv=None) -> int:
     p.add_argument("--share", action="store_true", help="print a short block to paste into a GitHub issue")
     p.add_argument("--lang", choices=["ko", "en"], help="output language (default: system language)")
     p.add_argument("--demo", help='run reproduced incident scenarios without hardware: "all" or a scenario name')
+    p.add_argument("--analyze-log", metavar="GUARD_CSV", help="summarise a guard log written with --robot.guard_log")
     p.add_argument("--guard-demo", action="store_true",
                    help="show what the teleop overload guard does on simulated situations (no hardware)")
     p.add_argument("--version", action="version", version=__version__)
@@ -101,6 +102,17 @@ def main(argv=None) -> int:
 
     if a.guard_demo:
         print(guard_demo_text())
+        return 0
+
+    if a.analyze_log:
+        from .loganalyze import judge, load_rows, render as render_log, summarize
+        rows = load_rows(a.analyze_log)
+        print(render_log(summarize(rows)))
+        from .loganalyze import TESTS
+        for mark in dict.fromkeys(r.get("mark", "") for r in rows):
+            if mark in TESTS:
+                v = judge(mark, [r for r in rows if r.get("mark") == mark])
+                print(f"[{'PASS' if v.passed else 'FAIL'}] {mark}: " + "; ".join(v.reasons))
         return 0
 
     if a.demo:
