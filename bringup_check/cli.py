@@ -26,6 +26,27 @@ from .scenarios import build, heading, make_bus
 ISSUE_URL = "https://github.com/bluvtx09/bringup-check/issues/new?template=diagnosis-report.md"
 
 
+def guard_demo_text() -> str:
+    from .guard_sim import run, scenarios
+    lines = []
+    for sc in scenarios():
+        on, off = run(sc, guard=True), run(sc, guard=False)
+        lines.append(f"== {sc.name}: {sc.note}")
+        lines.append("   " + t("gdemo.verdict_act" if on.acted else "gdemo.verdict_none")
+                     + ("   " + t("gdemo.at", s=on.first_action_s) if on.acted else ""))
+        lines.append("   " + t("gdemo.over", thr=on_threshold(sc), a=off.seconds_over_threshold, b=on.seconds_over_threshold))
+        for ts, e in on.events:
+            lines.append(f"   {ts:5.2f}s  {e.message}")
+        lines.append("")
+    lines.append(t("gdemo.note"))
+    return "\n".join(lines)
+
+
+def on_threshold(sc) -> float:
+    from .guard import GuardConfig
+    return GuardConfig().param(sc.motor, "load_threshold")
+
+
 def _parse_ids(text: str) -> list[int]:
     return [int(x) for x in text.split(",") if x.strip()]
 
@@ -67,6 +88,8 @@ def main(argv=None) -> int:
     p.add_argument("--share", action="store_true", help="print a short block to paste into a GitHub issue")
     p.add_argument("--lang", choices=["ko", "en"], help="output language (default: system language)")
     p.add_argument("--demo", help='run reproduced incident scenarios without hardware: "all" or a scenario name')
+    p.add_argument("--guard-demo", action="store_true",
+                   help="show what the teleop overload guard does on simulated situations (no hardware)")
     p.add_argument("--version", action="version", version=__version__)
     a = p.parse_args(argv)
     if a.lang:
@@ -75,6 +98,10 @@ def main(argv=None) -> int:
     ids = _parse_ids(a.ids)
     names = SO101_NAMES if ids == [1, 2, 3, 4, 5, 6] else {}
     grippers = frozenset(_parse_ids(a.gripper_ids))
+
+    if a.guard_demo:
+        print(guard_demo_text())
+        return 0
 
     if a.demo:
         scs = build()

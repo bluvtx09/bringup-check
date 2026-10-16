@@ -57,6 +57,44 @@ bringup-check --port /dev/ttyACM0 --hold-test 5
 - `--hold-test` is the only option that powers the motors. It sets each goal to the current position first, so nothing jumps, and restores the original torque state afterwards. Still, be ready to support the arm.
 - Exit code is 1 when a `[PROBLEM]` is found.
 
+## Teleop overload guard (new in v0.3)
+
+A common way to burn a follower servo: during teleoperation the follower is blocked — the gripper is already closed on an object, or a joint is pressed into the table — while the leader keeps commanding it further (see LeRobot #2819). The servo then pushes at full load, standing still, until it overheats.
+
+The guard is a drop-in LeRobot robot type. It watches load, position and temperature every control cycle and steps in only when a motor is **blocked** (high load, far from its goal, not moving) for more than ~1.5 s:
+
+- **arm joints** stop pushing and back off 2° from the obstacle;
+- **the gripper** keeps a *light* grip just past the contact point, so the object isn't dropped;
+- a joint that is merely **carrying the arm's weight** is left alone — the guard checks this with a small 2° probe before acting, so the arm doesn't droop;
+- it hands control back as soon as you move the leader away from the obstacle.
+
+```bash
+pip install "git+https://github.com/bluvtx09/bringup-check#subdirectory=plugins/lerobot_robot_so101_guarded"
+
+# same arguments as so101_follower — only the type changes
+lerobot-teleoperate \
+  --robot.type=so101_follower_guarded --robot.port=/dev/ttyACM0 --robot.id=my_arm \
+  --teleop.type=so101_leader --teleop.port=/dev/ttyACM1 --teleop.id=my_leader
+```
+
+Options: `--robot.guard_mode=warn` only prints what it would do; `--robot.guard_log=guard.csv` records every cycle (please attach it to a result issue — it's the data we need to tune the thresholds). It reuses your existing `so101_follower` calibration and works with `lerobot-record` too.
+
+See what it does without a robot:
+
+```bash
+bringup-check --guard-demo
+```
+
+```
+== gripper_squeeze: leader gripper closed fully on an object 35 % open (LeRobot #2819)
+   guard stepped in   (first at 3.3 s)
+   time at or above 25% load: without guard 8.1 s → with guard 3.4 s
+== heavy_holding: shoulder at 90 % load from weight: sags 9°, looks blocked but isn't
+   guard stayed out
+```
+
+Tested against LeRobot 0.6.1's own config parsing, robot factory and `send_action`, with the serial bus replaced by a simple servo model. **Not yet tested on a physical arm**; thresholds are starting points. Each cycle adds two bus reads (a few ms).
+
 ## Please share your result
 
 The thresholds are starting points taken from public reports, **not yet validated on real robots**. If you run it on your robot — healthy or not — please open an issue with:
@@ -77,7 +115,7 @@ The `--share` block contains only motor readings and finding codes — no file p
 
 ## Roadmap
 
-1. Calibrate thresholds with shared results and a real SO-101 (healthy vs. deliberately faulted)
+1. Calibrate diagnosis and guard thresholds with shared results and guard logs from real SO-101s
 2. A small back-and-forth motion test for backlash and binding
 3. Pre-flight check of user code before it runs on the robot (stall, limits, sudden jumps)
 4. Servo health tracking over time
