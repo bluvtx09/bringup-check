@@ -23,7 +23,7 @@ MSG: dict[str, dict[str, str]] = {
         # bus
         "bus.none.title": "모터가 하나도 응답하지 않습니다",
         "bus.none.detail": "USB는 열렸지만 버스에서 어떤 모터도 대답하지 않았습니다.",
-        "bus.none.fix": "① 모터 전원 어댑터가 켜져 있는지 ② 컨트롤러 보드와 첫 모터 사이 케이블 ③ 통신 속도(기본 1Mbps) ④ Waveshare 보드라면 점퍼가 B(USB) 쪽인지 확인하세요.",
+        "bus.none.fix": "① 모터 전원 어댑터가 켜져 있는지 ② 컨트롤러 보드와 첫 모터 사이 케이블 ③ 통신 속도(기본 1Mbps) ④ Waveshare 보드라면 점퍼가 B(USB) 쪽인지 ⑤ 어댑터의 실제 출력 전압을 멀티미터로 확인하세요. 표기보다 높은 전압(예: 12V 어댑터가 16V 출력)이면 서보가 보호 모드로 들어가 응답하지 않을 수 있습니다(LeRobot #3394).",
         "bus.chain_break.title": "{nxt}부터 끝까지 응답이 없습니다",
         "bus.chain_break.detail": "응답한 모터: {ok} / 응답 없음: {missing}. 데이지 체인이 한 지점에서 끊긴 모양입니다.",
         "bus.chain_break.fix": "{prev}와 {nxt} 사이 케이블과 커넥터를 다시 꽂거나 교체해 보세요.",
@@ -159,7 +159,7 @@ MSG: dict[str, dict[str, str]] = {
         "fix.overload": "The joint may be blocked, the gripper may keep closing on an object, or a goal outside the limits was commanded.",
         "bus.none.title": "No motor answers",
         "bus.none.detail": "The USB port opened, but no motor on the bus replied.",
-        "bus.none.fix": "Check (1) the motor power adapter is on, (2) the cable from the controller board to the first motor, (3) the baud rate (default 1 Mbps), (4) on Waveshare boards, that the jumpers are on B (USB).",
+        "bus.none.fix": "Check (1) the motor power adapter is on, (2) the cable from the controller board to the first motor, (3) the baud rate (default 1 Mbps), (4) on Waveshare boards, that the jumpers are on B (USB), (5) the adapter's real output with a multimeter. A supply above its label (e.g. a '12 V' adapter giving 16 V) can put the servos into protection so none of them answer (LeRobot #3394).",
         "bus.chain_break.title": "No answer from {nxt} onward",
         "bus.chain_break.detail": "Answering: {ok} / silent: {missing}. The daisy chain looks broken at one point.",
         "bus.chain_break.fix": "Reseat or replace the cable and connectors between {prev} and {nxt}.",
