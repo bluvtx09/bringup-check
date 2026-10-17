@@ -1,0 +1,2 @@
+[console_scripts]
+bringup-check = bringup_check.cli:main

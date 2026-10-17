@@ -91,10 +91,35 @@ def main(argv=None) -> int:
     p.add_argument("--analyze-log", metavar="GUARD_CSV", help="summarise a guard log written with --robot.guard_log")
     p.add_argument("--guard-demo", action="store_true",
                    help="show what the teleop overload guard does on simulated situations (no hardware)")
+    p.add_argument("--scan-dataset", nargs="+", metavar="DATASET",
+                   help="find moments where the follower was blocked in recorded LeRobot datasets "
+                        "(local folders or Hugging Face dataset ids; no robot needed)")
+    p.add_argument("--top", type=int, default=10, help="with --scan-dataset: how many of the longest holds to list")
     p.add_argument("--version", action="version", version=__version__)
     a = p.parse_args(argv)
     if a.lang:
         set_lang(a.lang)
+
+    if a.scan_dataset:
+        from .datasetscan import render as render_scan, render_summary, scan, to_json as scan_json
+        results = []
+        for src in a.scan_dataset:
+            try:
+                r = scan(src)
+            except SystemExit:
+                raise
+            except Exception as e:      # one broken dataset should not stop a batch
+                print(f"== {src}\n[{t('level.problem')}] {e}\n")
+                continue
+            results.append(r)
+            print(render_scan(r, a.top))
+            print()
+        if len(results) > 1:
+            print(render_summary(results))
+        if a.json:
+            Path(a.json).write_text(scan_json(results), encoding="utf-8")
+            print(t("cli.json_saved", path=a.json))
+        return 0
 
     ids = _parse_ids(a.ids)
     names = SO101_NAMES if ids == [1, 2, 3, 4, 5, 6] else {}

@@ -1,0 +1,13 @@
+
+[dataset]
+numpy
+pyarrow
+huggingface_hub
+
+[hardware]
+feetech-servo-sdk
+
+[test]
+pytest
+numpy
+pyarrow

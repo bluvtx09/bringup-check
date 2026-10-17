@@ -103,6 +103,30 @@ so101-guard-validate --port /dev/ttyACM0 --id my_arm
 
 Four guided tests: a gentle **sweep** and a stretched-out **hold** (the guard must stay out), the **wrist pushing into a book** and the **gripper squeezing a sponge** (it must step in). Positions are taught by hand with torque off, so nothing assumes which way is down; every move is speed-limited. It prints PASS/FAIL per test and saves a CSV — attaching that CSV to an issue is the single most useful thing you can do for this project. `bringup-check --analyze-log file.csv` summarises any guard log.
 
+## Scan recorded datasets for blocked moments (new in v0.5, no robot needed)
+
+A teleoperation dataset stores what the leader commanded (`action`) and where the follower really was (`observation.state`). When the command stays far from the position while the joint does not move, the follower was blocked: the gripper closed on an object, or a joint pressed into the table. This is the situation the overload guard targets, and `--scan-dataset` finds it using the guard's own thresholds.
+
+```bash
+pip install "bringup-check[dataset] @ git+https://github.com/bluvtx09/bringup-check"
+
+# a Hugging Face dataset id, or a local LeRobot dataset folder; several at once is fine
+bringup-check --scan-dataset lerobot/svla_so101_pickplace
+bringup-check --scan-dataset ~/.cache/huggingface/lerobot/me/my_dataset --json scan.json
+```
+
+It downloads only `meta/info.json` and the parquet files (no videos), lists per joint how often and how long it was blocked, names the longest holds by episode and time so you can check them in the video, and flags joints where the leader and follower look calibrated differently.
+
+### What 53 public SO-100/101 datasets show
+
+Scanned 7,731 episodes (about 33 hours) from 53 public datasets on the Hub ([list](studies/public_datasets.txt)), using the guard's thresholds (gap ≥ 5 gripper / 8 arm, nearly still, ≥ 1.5 s):
+
+- **Blocked gripper squeezes are routine.** 53 % of episodes contain at least one, in 40 of the 53 datasets. Median length 3.3 s; 16 % last over 5 s, 92 over 10 s, the longest 16.4 s.
+- **Arm joints are rarely blocked.** About 3 % of episodes, concentrated in a few datasets.
+- **Leader/follower calibration mismatches show up too**, on 8 joints across 6 datasets.
+
+Two caveats. Public datasets are mostly recorded by experienced users and then curated, so they understate what happens during a first teleoperation. And datasets carry no load or temperature, so these are position-only candidates. Still, the result points the same way a kit seller's support data did: the gripper squeezing an object is where follower servos spend the most time pushing hard.
+
 ## Please share your result
 
 The thresholds are starting points taken from public reports, **not yet validated on real robots**. If you run it on your robot — healthy or not — please open an issue with:
