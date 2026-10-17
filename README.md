@@ -54,8 +54,29 @@ bringup-check --port /dev/ttyACM0 --hold-test 5
 - `--calib auto` finds your LeRobot calibration file and picks the one that matches the arm on the bus.
 - `--ids` lists motor IDs **in daisy-chain order** (default `1,2,3,4,5,6`); the broken-cable guess uses this order.
 - `--lang en|ko` sets the language (default: your system language).
-- `--hold-test` is the only option that powers the motors. It sets each goal to the current position first, so nothing jumps, and restores the original torque state afterwards. Still, be ready to support the arm.
+- `--hold-test` and `--first-run` (below) are the only options that power the motors. `--hold-test` sets each goal to the current position first, so nothing jumps, and restores the original torque state afterwards. Still, be ready to support the arm.
 - Exit code is 1 when a `[PROBLEM]` is found.
+
+## First-run safety mode (new in v0.6)
+
+For the first time you power a freshly built arm. It goes step by step and only moves on when the step before passes:
+
+1. **Power and wiring:** every motor answers, the supply is in range, no error flags.
+2. **Calibration:** your LeRobot calibration file matches the arm and every joint sits inside it.
+3. **First move at low power:** with the torque limit at 20 %, each motor in turn moves 4° toward the middle of its range and back.
+4. **Normal power:** the same at 50 % and then 100 % (gripper 50 %, like LeRobot), asking before each step up.
+
+While a motor is powered, every reading is watched. If a servo reports an error flag, gets within 10 °C of its limit, or the supply sags more than 15 %, **all motors are powered off at once**. A joint that pushes without moving is stopped on its own: at low power that is often just the arm's weight, so it is retried at the next level; if it still cannot move at normal power, something is in the way (a tight screw, a caught cable, a misfitted horn). Your original torque limits and power state are restored at the end, even after an error or Ctrl+C.
+
+```bash
+# rest the arm folded on its support first
+bringup-check --first-run --port /dev/ttyACM0
+
+# see what it does on simulated arms (healthy, stuck elbow, weak supply, faulty servo, ...)
+bringup-check --first-run-demo all
+```
+
+Tested on a simulated arm, not yet on a physical SO-101; the thresholds are starting points.
 
 ## Teleop overload guard (new in v0.3)
 

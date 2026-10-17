@@ -95,6 +95,12 @@ def main(argv=None) -> int:
                    help="find moments where the follower was blocked in recorded LeRobot datasets "
                         "(local folders or Hugging Face dataset ids; no robot needed)")
     p.add_argument("--top", type=int, default=10, help="with --scan-dataset: how many of the longest holds to list")
+    p.add_argument("--first-run", action="store_true",
+                   help="first-run safety mode: check power and calibration, then move each motor a little, "
+                        "starting at low torque and stopping on overload")
+    p.add_argument("--first-run-demo", metavar="SCENARIO",
+                   help='first-run safety mode on simulated arms, no hardware: "all" or a scenario name')
+    p.add_argument("--yes", action="store_true", help="with --first-run: do not ask before each torque level")
     p.add_argument("--version", action="version", version=__version__)
     a = p.parse_args(argv)
     if a.lang:
@@ -128,6 +134,50 @@ def main(argv=None) -> int:
     if a.guard_demo:
         print(guard_demo_text())
         return 0
+
+    if a.first_run_demo:
+        from .firstrun import FirstRun
+        from .firstrun_sim import scenarios as fr_scenarios
+        scs = fr_scenarios()
+        chosen = scs if a.first_run_demo == "all" else {a.first_run_demo: scs[a.first_run_demo]}
+        for name, sc in chosen.items():
+            print(f"\n######## {name}: {sc['title']}")
+            bus = sc["make"]()
+            FirstRun(bus, ids, names, sc["calib"], sleep=bus.advance, log=print).run()
+        print("\n" + t("fr.demo_note"))
+        return 0
+
+    if a.first_run:
+        if not a.port:
+            p.error(t("cli.need_port"))
+        from .firstrun import FirstRun, FirstRunConfig
+        try:
+            bus = FeetechBus(a.port, a.baud)
+        except BusError as e:
+            print(f"[{t('level.problem')}] {e}")
+            return 2
+        try:
+            calib = a.calib or "auto"
+            if calib == "auto":
+                snap = take_snapshot(bus, ids)
+                positions = {i: snap.get(i, "Present_Position") for i in snap.responding}
+                path, calib, n = pick(candidates(), positions)
+                print(t("cli.calib_none") if path is None else
+                      (t("cli.calib_many", path=path) if n > 1 else t("cli.calib_found", path=path)))
+            else:
+                calib = load_calibration(Path(calib).expanduser())
+            ask = (lambda prompt: True) if a.yes else (lambda prompt: input(prompt).strip().lower() == "y")
+            res = FirstRun(bus, ids, names, calib, FirstRunConfig(gripper_ids=grippers), confirm=ask).run()
+        finally:
+            bus.close()
+        if a.json:
+            import json
+            Path(a.json).write_text(json.dumps({
+                "completed": res.completed, "stage": res.stage,
+                "findings": [f.to_dict() for f in res.findings],
+                "trials": [tr.__dict__ for tr in res.trials]}, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(t("cli.json_saved", path=a.json))
+        return 0 if res.completed else 1
 
     if a.analyze_log:
         from .loganalyze import judge, load_rows, render as render_log, summarize
