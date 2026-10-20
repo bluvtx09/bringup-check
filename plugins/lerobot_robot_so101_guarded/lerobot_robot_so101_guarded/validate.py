@@ -238,6 +238,7 @@ def main(argv=None) -> int:
     p.add_argument("--tests", default=",".join(TESTS))
     p.add_argument("--log", default=None, help="CSV path (default: guard_validation_<time>.csv)")
     p.add_argument("--lang", choices=["ko", "en"])
+    p.add_argument("--no-send", action="store_true", help="never ask to send the result to the developer")
     a = p.parse_args(argv)
     if a.lang:
         set_lang(a.lang)
@@ -262,6 +263,12 @@ def main(argv=None) -> int:
     for v in results:
         print(f"[{'PASS' if v.passed else 'FAIL'}] {v.test}: " + "; ".join(v.reasons))
     print(t("val.share", path=Path(log).resolve()))
+    try:    # older bringup-check versions have no send module; the validation result stands either way
+        from bringup_check.send import guard_validation_data, offer
+    except ImportError:
+        offer = None
+    if offer is not None:
+        offer("guard_validate", lambda: guard_validation_data(log, results, runner.notes), enabled=not a.no_send)
     return 0 if results and all(v.passed for v in results) else 1
 
 

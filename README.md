@@ -160,6 +160,16 @@ and tell us whether the diagnosis matched the real cause. → [Share a result](h
 
 The `--share` block contains only motor readings and finding codes — no file paths or port names.
 
+### Or send it with one keypress (new in v0.7)
+
+At the end of a robot run (`--port`, `--first-run`, `so101-guard-validate`), the tool may offer to send the result to the developer. It first prints **everything** that would be sent, and sends only if you type `y`; the default is no.
+
+- Sent: servo readings (voltage, temperature, load, current, position, limits, status), finding codes, test verdicts, tool and Python version, OS name.
+- Never sent: port names, user names, file paths, robot ids, calibration files, raw logs.
+- It goes to a Google Form whose responses only the maintainer can see, and is used only to tune the diagnostics.
+- It never asks without a terminal (scripts, CI), and never changes the output or exit code. A failed send just says so.
+- Turn the question off with `--no-send` or `BRINGUP_CHECK_NO_SEND=1`.
+
 ## Limits
 
 - Supports Feetech STS/SMS serial-bus servos (STS3215 in SO-100/101). Dynamixel and other buses are not supported yet.

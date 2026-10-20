@@ -101,6 +101,8 @@ def main(argv=None) -> int:
     p.add_argument("--first-run-demo", metavar="SCENARIO",
                    help='first-run safety mode on simulated arms, no hardware: "all" or a scenario name')
     p.add_argument("--yes", action="store_true", help="with --first-run: do not ask before each torque level")
+    p.add_argument("--no-send", action="store_true",
+                   help="never ask to send the result to the developer (same as BRINGUP_CHECK_NO_SEND=1)")
     p.add_argument("--version", action="version", version=__version__)
     a = p.parse_args(argv)
     if a.lang:
@@ -177,6 +179,8 @@ def main(argv=None) -> int:
                 "findings": [f.to_dict() for f in res.findings],
                 "trials": [tr.__dict__ for tr in res.trials]}, ensure_ascii=False, indent=2), encoding="utf-8")
             print(t("cli.json_saved", path=a.json))
+        from .send import first_run_data, offer
+        offer("first_run", lambda: first_run_data(res), enabled=not a.no_send)
         return 0 if res.completed else 1
 
     if a.analyze_log:
@@ -225,6 +229,8 @@ def main(argv=None) -> int:
     if a.share:
         print(share_summary(snap, findings, meta))
     print(t("cli.share", url=ISSUE_URL))
+    from .send import diagnosis_data, offer
+    offer("diagnosis", lambda: diagnosis_data(snap, findings, hold), enabled=not a.no_send)
     return 1 if any(f.level == PROBLEM for f in findings) else 0
 
 

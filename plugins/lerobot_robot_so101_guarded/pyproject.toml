@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lerobot_robot_so101_guarded"
-version = "0.2.0"
+version = "0.2.1"
 description = "SO-100/SO-101 follower for LeRobot with an overload guard that stops blocked servos from burning out"
 requires-python = ">=3.10"
 dependencies = [

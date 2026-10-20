@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bringup-check"
-version = "0.6.0"
+version = "0.7.0"
 description = "Setup diagnostics for Feetech serial-bus servo robots (SO-100/SO-101)"
 readme = "README.md"
 requires-python = ">=3.9"
