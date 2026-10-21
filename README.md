@@ -170,6 +170,21 @@ At the end of a robot run (`--port`, `--first-run`, `so101-guard-validate`), the
 - It never asks without a terminal (scripts, CI), and never changes the output or exit code. A failed send just says so.
 - Turn the question off with `--no-send` or `BRINGUP_CHECK_NO_SEND=1`.
 
+## Troubleshooting
+
+| What you see | What to do |
+|---|---|
+| `pip install "...@ git+https://..."` fails with a git error | pip needs [Git](https://git-scm.com/downloads) to install from GitHub. Install it, or download this repo as a ZIP (**Code → Download ZIP**), unzip it and run `pip install "./bringup-check-main[hardware]"`. For the guard plugin from the ZIP, use `pip install --no-deps ./bringup-check-main/plugins/lerobot_robot_so101_guarded` (LeRobot must already be installed). |
+| `Cannot open port ...` | Check the port name. Windows: `COM3`, `COM4`, ... (Device Manager → Ports). Linux: `/dev/ttyACM0`. macOS: `/dev/tty.usbmodem...`. `lerobot-find-port` finds it too. Close anything else using the port (another terminal running LeRobot, Feetech's debug tool, Arduino IDE). On Linux, a permission error goes away with `sudo usermod -aG dialout $USER` and logging in again. |
+| `scservo_sdk is missing` | `pip install feetech-servo-sdk` (installed with `[hardware]` and with LeRobot). |
+| "No motor answers" | Follow the five checks the tool prints. The most common causes are a supply that is off or wrong (the SO-101 follower and leader may need different voltages), and a controller board jumper set to the wrong side. |
+| `--calib auto` finds no file | It looks in `$HF_LEROBOT_CALIBRATION`, `$HF_HOME/lerobot/calibration` and `~/.cache/huggingface/lerobot/calibration`. Pass the file directly instead: `--calib path/to/my_arm.json`. |
+| `so101-guard-validate` says there is no calibration file | Use the same `--id` you gave `lerobot-calibrate`, or point to the folder with `--calibration_dir`. |
+| `lerobot-teleoperate` does not know `so101_follower_guarded` | Install the plugin into the same Python environment as LeRobot (`pip show lerobot_robot_so101_guarded` should find it). The guard needs Python 3.10+ and was tested with LeRobot 0.6.1; with another version, please open an issue with the error and `pip show lerobot`. |
+| A question asks whether to send the result | It is optional and the default is no (see above). `--no-send` turns it off. |
+
+Anything else: [open an issue](https://github.com/bluvtx09/bringup-check/issues/new) with the full output. I'm a student, so replies can take a few days.
+
 ## Limits
 
 - Supports Feetech STS/SMS serial-bus servos (STS3215 in SO-100/101). Dynamixel and other buses are not supported yet.

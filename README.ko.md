@@ -162,6 +162,21 @@ bringup-check --port /dev/ttyACM0 --calib auto --share
 - 터미널이 없으면(스크립트, CI) 묻지 않고, 출력과 종료 코드는 바뀌지 않습니다. 전송에 실패하면 실패했다고만 알립니다.
 - 질문을 끄려면 `--no-send`를 붙이거나 `BRINGUP_CHECK_NO_SEND=1`로 설정하세요.
 
+## 문제가 생기면
+
+| 이런 메시지가 나오면 | 이렇게 하세요 |
+|---|---|
+| `pip install "...@ git+https://..."`이 git 오류로 실패 | GitHub에서 바로 설치하려면 [Git](https://git-scm.com/downloads)이 필요합니다. 설치하거나, 저장소를 ZIP으로 받아(**Code → Download ZIP**) 압축을 풀고 `pip install "./bringup-check-main[hardware]"`를 실행하세요. 가드 플러그인은 `pip install --no-deps ./bringup-check-main/plugins/lerobot_robot_so101_guarded`로 설치합니다(LeRobot이 이미 설치돼 있어야 함). |
+| `포트 ...를 열 수 없습니다` | 포트 이름을 확인하세요. Windows는 `COM3`, `COM4` 등(장치 관리자 → 포트), Linux는 `/dev/ttyACM0`, macOS는 `/dev/tty.usbmodem...`입니다. `lerobot-find-port`로도 찾을 수 있습니다. 같은 포트를 쓰는 다른 프로그램(LeRobot을 돌리는 다른 터미널, Feetech 디버그 프로그램, Arduino IDE)을 닫으세요. Linux에서 권한 오류라면 `sudo usermod -aG dialout $USER` 후 다시 로그인하세요. |
+| `scservo_sdk가 없습니다` | `pip install feetech-servo-sdk` (`[hardware]`나 LeRobot을 설치하면 함께 깔립니다) |
+| "모터가 하나도 응답하지 않습니다" | 도구가 알려 주는 다섯 가지 점검을 따라 하세요. 가장 흔한 원인은 전원이 꺼졌거나 잘못된 경우(SO-101 팔로워와 리더는 전압이 다를 수 있음)와 컨트롤러 보드 점퍼 위치입니다. |
+| `--calib auto`가 파일을 못 찾음 | `$HF_LEROBOT_CALIBRATION`, `$HF_HOME/lerobot/calibration`, `~/.cache/huggingface/lerobot/calibration`을 찾습니다. 파일 경로를 직접 주세요: `--calib path/to/my_arm.json` |
+| `so101-guard-validate`가 캘리브레이션 파일이 없다고 함 | `lerobot-calibrate` 때와 같은 `--id`를 쓰거나, `--calibration_dir`로 폴더를 알려 주세요. |
+| `lerobot-teleoperate`가 `so101_follower_guarded`를 모름 | 플러그인을 LeRobot과 같은 파이썬 환경에 설치하세요(`pip show lerobot_robot_so101_guarded`로 확인). 가드는 파이썬 3.10 이상이 필요하고 LeRobot 0.6.1로 시험했습니다. 다른 버전에서 안 되면 오류 메시지와 `pip show lerobot` 결과를 이슈로 올려 주세요. |
+| 결과를 보낼지 묻는 질문이 나옴 | 선택 사항이고 기본값은 보내지 않음입니다(위 설명 참고). `--no-send`로 끌 수 있습니다. |
+
+그 밖의 문제는 전체 출력과 함께 [이슈로 올려 주세요](https://github.com/bluvtx09/bringup-check/issues/new). 학생이 관리하고 있어서 답이 며칠 걸릴 수 있습니다.
+
 ## 한계
 
 - Feetech STS/SMS 버스 서보(SO-100/101의 STS3215)만 지원합니다. Dynamixel 등은 아직 지원하지 않습니다.
