@@ -54,7 +54,10 @@ MSG: dict[str, dict[str, str]] = {
         "volt.chain_drop.fix": "중간 커넥터가 헐겁거나 케이블이 가늘 수 있습니다. 전압이 크게 떨어지는 구간의 케이블을 다시 꽂거나 교체하세요.",
         "volt.spread.title": "{m}의 전압만 낮습니다 ({v:.1f}V)",
         "volt.spread.detail": "모터 간 전압 차이 {d:.1f}V.",
-        "volt.spread.fix": "이 모터로 들어가는 커넥터 접촉을 확인하세요.",
+        "volt.spread.fix": ("먼저 {m}에 연결된 커넥터를 다시 꽂아 보세요. 그래도 이 모터만 낮게 나오면, "
+                             "멀티미터가 있다면 이 모터의 전원 핀 전압을 직접 재서 도구가 보여 준 값과 비교하세요. "
+                             "직접 잰 값이 정상이면 서보의 전압 센서가 잘못 읽는 것일 수 있고, 실제 전원 문제는 아닙니다. "
+                             "멀티미터가 없다면 다른 서보와 자리를 바꿔 끼워, 낮은 값이 서보를 따라가는지 보세요."),
         # temperature
         "temp.near_limit.title": "{m} {t}°C — 과열 보호 직전 (한계 {lim}°C)",
         "temp.near_limit.detail": "곧 힘이 빠지거나 보호 모드로 들어갑니다.",
@@ -250,7 +253,11 @@ MSG: dict[str, dict[str, str]] = {
         "volt.chain_drop.fix": "A middle connector may be loose or the cable too thin. Reseat or replace the cable where the voltage drops most.",
         "volt.spread.title": "Only {m} has low voltage ({v:.1f} V)",
         "volt.spread.detail": "Spread between motors {d:.1f} V.",
-        "volt.spread.fix": "Check the connector feeding this motor.",
+        "volt.spread.fix": ("First reseat the connector going into {m}. If only this motor still reads low and you "
+                             "have a multimeter, measure the voltage on its power pins and compare it with what the tool "
+                             "shows. If your measurement is normal, the servo's voltage sensor may be misreading, and the "
+                             "power itself is fine. Without a multimeter, swap this servo with another one and see whether "
+                             "the low reading follows the servo."),
         "temp.near_limit.title": "{m} at {t}°C — close to thermal protection (limit {lim}°C)",
         "temp.near_limit.detail": "It will soon lose torque or enter protection.",
         "temp.hot.title": "{m} at {t}°C",

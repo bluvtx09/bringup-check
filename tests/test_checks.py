@@ -135,3 +135,16 @@ def test_feetech_bus_uses_sdk_signatures(monkeypatch):
     assert bus.write(1, "Torque_Enable", 1) and ("w1", 1, 40, 1) in calls
     bus.close()
     assert "close" in calls
+
+
+@pytest.mark.parametrize("lang,words", [("ko", ["3번 모터", "멀티미터", "바꿔 끼워"]),
+                                        ("en", ["motor 3", "multimeter", "swap"])])
+def test_single_low_motor_fix_names_it_and_gives_both_checks(lang, words):
+    import copy
+    sc = copy.deepcopy(SCENARIOS["healthy"])
+    sc["motors"][3]["Present_Voltage"] -= 6          # only motor 3 reads 0.6 V low
+    set_lang(lang)
+    _, findings, _ = _run(sc)
+    f = next(f for f in findings if f.code == "volt.spread")
+    assert f.motors == [3]
+    assert all(w.lower() in f.fix.lower() for w in words), f.fix
