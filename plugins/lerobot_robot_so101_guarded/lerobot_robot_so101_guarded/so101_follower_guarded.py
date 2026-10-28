@@ -34,6 +34,11 @@ class SO101FollowerGuarded(_Base):
 
     def __init__(self, config: SO101FollowerGuardedConfig):
         super().__init__(config)
+        try:    # an unprintable character must never stop teleoperation
+            from bringup_check.messages import safe_console
+            safe_console()
+        except ImportError:
+            pass
         gcfg = GuardConfig(mode=config.guard_mode)
         if config.guard_arm_load is not None:
             gcfg.arm["load_threshold"] = config.guard_arm_load
@@ -115,7 +120,10 @@ class SO101FollowerGuarded(_Base):
 
         sent, events = self.guard.step(goals, readings, dt)
         for e in events:  # printed so they show up next to lerobot-teleoperate's live readout
-            print(e.message, flush=True)
+            try:
+                print(e.message, flush=True)
+            except Exception:  # a console problem must never stop the robot loop
+                pass
             logger.debug("guard event %s %s %s", e.kind, e.motor, e.data)
         self._write_log(now, goals, sent, readings, events)
 

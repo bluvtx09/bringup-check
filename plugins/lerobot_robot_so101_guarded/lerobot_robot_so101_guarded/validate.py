@@ -231,6 +231,11 @@ def verdicts(log_path, notes: dict[str, str]):
 
 
 def main(argv=None) -> int:
+    try:
+        from bringup_check.messages import safe_console
+        safe_console()
+    except ImportError:
+        pass
     p = argparse.ArgumentParser(prog="so101-guard-validate", description=__doc__.split("\n")[0])
     p.add_argument("--port", required=True)
     p.add_argument("--id", required=True, help="the robot id you used with lerobot-calibrate")

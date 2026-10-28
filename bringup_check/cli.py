@@ -19,7 +19,7 @@ from . import __version__
 from .bus import BusError, FeetechBus
 from .calib import candidates, load_calibration, pick
 from .checks import LEVEL_ORDER, PROBLEM, SO101_NAMES, run_all, run_hold_test, take_snapshot
-from .messages import get_lang, set_lang, t
+from .messages import get_lang, safe_console, set_lang, t
 from .report import render, share_summary, to_json
 from .scenarios import build, heading, make_bus
 
@@ -74,6 +74,7 @@ def diagnose(bus, ids, names, calib=None, servo_rating=None, hold_seconds=0.0, t
 
 
 def main(argv=None) -> int:
+    safe_console()
     p = argparse.ArgumentParser(prog="bringup-check",
                                 description="Setup diagnostics for Feetech serial-bus servo robots (SO-100/SO-101)")
     p.add_argument("--port", help="controller port, e.g. /dev/ttyACM0 or COM3")

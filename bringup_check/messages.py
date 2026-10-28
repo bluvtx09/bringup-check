@@ -418,6 +418,20 @@ def _default_lang() -> str:
 _lang = _default_lang()
 
 
+def safe_console() -> None:
+    """Never crash on a character the console cannot show (e.g. "→" on a Windows code page).
+
+    Text that cannot be encoded is printed as "?" instead of raising UnicodeEncodeError. This matters
+    when output is redirected to a file on Windows, where Python uses the system code page.
+    """
+    import sys
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except Exception:
+            pass
+
+
 def set_lang(lang: str) -> None:
     global _lang
     if lang not in MSG:
