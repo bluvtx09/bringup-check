@@ -205,3 +205,6 @@ Anything else: [open an issue](https://github.com/bluvtx09/bringup-check/issues/
 pip install -e ".[test]"
 pytest
 ```
+## License
+
+[MIT](LICENSE). Free to use, modify and redistribute, including in commercial kits and documentation, as long as the copyright notice is kept.
