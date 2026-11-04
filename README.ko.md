@@ -89,7 +89,10 @@ bringup-check --first-run-demo all
 - 막힌 게 아니라 **팔 무게를 버티는 중인 관절**은 건드리지 않습니다. 개입 전에 2°짜리 작은 확인 동작으로 이를 구분하므로 팔이 처지지 않습니다.
 - 리더를 장애물 반대쪽으로 움직이면 바로 다시 따라갑니다.
 
+LeRobot이 이미 돌아가는 환경에 설치합니다(버전이나 포크는 상관없음). LeRobot이나 torch를 설치·업그레이드·교체하지 **않으므로**, 직접 맞춘 환경(예: NVIDIA용 torch를 쓰는 Jetson)도 그대로 유지됩니다.
+
 ```bash
+# 먼저 LeRobot 환경을 활성화하세요
 pip install "git+https://github.com/bluvtx09/bringup-check#subdirectory=plugins/lerobot_robot_so101_guarded"
 
 # so101_follower와 인자는 같고, type만 바꾸면 됩니다
@@ -106,7 +109,7 @@ lerobot-teleoperate \
 bringup-check --guard-demo
 ```
 
-LeRobot 0.6.1의 실제 설정 해석·로봇 생성·`send_action` 코드로, 시리얼 버스만 단순한 서보 모델로 바꿔 시험했습니다. **실물 팔에서는 아직 시험하지 않았고**, 기준값은 출발점입니다. 주기마다 버스 읽기가 두 번 늘어납니다(수 ms).
+LeRobot 0.6.1(가드가 쓰는 SO 팔로워·로봇 설정·모터 버스·플러그인 로딩 코드는 0.6.2에서도 같음)의 실제 설정 해석·로봇 생성·`send_action` 코드로, 시리얼 버스만 단순한 서보 모델로 바꿔 시험했습니다. **실물 팔에서는 아직 시험하지 않았고**, 기준값은 출발점입니다. 주기마다 버스 읽기가 두 번 늘어납니다(수 ms).
 
 ### 내 팔에서 검증하기 (10분, 팔로워 한 대만, 리더 불필요)
 
@@ -172,7 +175,7 @@ bringup-check --port /dev/ttyACM0 --calib auto --share
 | "모터가 하나도 응답하지 않습니다" | 도구가 알려 주는 다섯 가지 점검을 따라 하세요. 가장 흔한 원인은 전원이 꺼졌거나 잘못된 경우(SO-101 팔로워와 리더는 전압이 다를 수 있음)와 컨트롤러 보드 점퍼 위치입니다. |
 | `--calib auto`가 파일을 못 찾음 | `$HF_LEROBOT_CALIBRATION`, `$HF_HOME/lerobot/calibration`, `~/.cache/huggingface/lerobot/calibration`을 찾습니다. 파일 경로를 직접 주세요: `--calib path/to/my_arm.json` |
 | `so101-guard-validate`가 캘리브레이션 파일이 없다고 함 | `lerobot-calibrate` 때와 같은 `--id`를 쓰거나, `--calibration_dir`로 폴더를 알려 주세요. |
-| `lerobot-teleoperate`가 `so101_follower_guarded`를 모름 | 플러그인을 LeRobot과 같은 파이썬 환경에 설치하세요(`pip show lerobot_robot_so101_guarded`로 확인). 가드는 파이썬 3.10 이상이 필요하고 LeRobot 0.6.1로 시험했습니다. 다른 버전에서 안 되면 오류 메시지와 `pip show lerobot` 결과를 이슈로 올려 주세요. |
+| `lerobot-teleoperate`가 `so101_follower_guarded`를 모름 | 플러그인을 LeRobot과 같은 파이썬 환경에 설치하세요(`pip show lerobot_robot_so101_guarded`로 확인). 가드는 파이썬 3.10 이상이 필요하고 LeRobot 0.6.1로 시험했습니다(0.6.2도 같은 로봇 코드). 다른 버전에서 안 되면 오류 메시지와 `pip show lerobot` 결과를 이슈로 올려 주세요. |
 | 결과를 보낼지 묻는 질문이 나옴 | 선택 사항이고 기본값은 보내지 않음입니다(위 설명 참고). `--no-send`로 끌 수 있습니다. |
 
 그 밖의 문제는 전체 출력과 함께 [이슈로 올려 주세요](https://github.com/bluvtx09/bringup-check/issues/new). 학생이 관리하고 있어서 답이 며칠 걸릴 수 있습니다.

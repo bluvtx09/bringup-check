@@ -89,7 +89,10 @@ The guard is a drop-in LeRobot robot type. It watches load, position and tempera
 - a joint that is merely **carrying the arm's weight** is left alone — the guard checks this with a small 2° probe before acting, so the arm doesn't droop;
 - it hands control back as soon as you move the leader away from the obstacle.
 
+Install it into the environment where LeRobot already runs (any version or fork). It does **not** install, upgrade or replace LeRobot or torch, so a custom setup (for example a Jetson with NVIDIA's torch build) stays as it is.
+
 ```bash
+# activate your LeRobot environment first
 pip install "git+https://github.com/bluvtx09/bringup-check#subdirectory=plugins/lerobot_robot_so101_guarded"
 
 # same arguments as so101_follower — only the type changes
@@ -114,7 +117,7 @@ bringup-check --guard-demo
    guard stayed out
 ```
 
-Tested against LeRobot 0.6.1's own config parsing, robot factory and `send_action`, with the serial bus replaced by a simple servo model. **Not yet tested on a physical arm**; thresholds are starting points. Each cycle adds two bus reads (a few ms).
+Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config, motor bus and plugin-loading code it relies on is unchanged in 0.6.2), robot factory and `send_action`, with the serial bus replaced by a simple servo model. **Not yet tested on a physical arm**; thresholds are starting points. Each cycle adds two bus reads (a few ms).
 
 ### Validate it on your arm (10 minutes, follower only — no leader needed)
 
@@ -180,7 +183,7 @@ At the end of a robot run (`--port`, `--first-run`, `so101-guard-validate`), the
 | "No motor answers" | Follow the five checks the tool prints. The most common causes are a supply that is off or wrong (the SO-101 follower and leader may need different voltages), and a controller board jumper set to the wrong side. |
 | `--calib auto` finds no file | It looks in `$HF_LEROBOT_CALIBRATION`, `$HF_HOME/lerobot/calibration` and `~/.cache/huggingface/lerobot/calibration`. Pass the file directly instead: `--calib path/to/my_arm.json`. |
 | `so101-guard-validate` says there is no calibration file | Use the same `--id` you gave `lerobot-calibrate`, or point to the folder with `--calibration_dir`. |
-| `lerobot-teleoperate` does not know `so101_follower_guarded` | Install the plugin into the same Python environment as LeRobot (`pip show lerobot_robot_so101_guarded` should find it). The guard needs Python 3.10+ and was tested with LeRobot 0.6.1; with another version, please open an issue with the error and `pip show lerobot`. |
+| `lerobot-teleoperate` does not know `so101_follower_guarded` | Install the plugin into the same Python environment as LeRobot (`pip show lerobot_robot_so101_guarded` should find it). The guard needs Python 3.10+ and was tested with LeRobot 0.6.1 (0.6.2 uses the same robot code); with another version, please open an issue with the error and `pip show lerobot`. |
 | A question asks whether to send the result | It is optional and the default is no (see above). `--no-send` turns it off. |
 
 Anything else: [open an issue](https://github.com/bluvtx09/bringup-check/issues/new) with the full output. I'm a student, so replies can take a few days.

@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 
-from lerobot.robots.config import RobotConfig
+try:
+    from lerobot.robots.config import RobotConfig
+except ModuleNotFoundError as e:  # the plugin uses the LeRobot already installed; it never installs one
+    if e.name != "lerobot":
+        raise
+    raise ModuleNotFoundError(
+        "lerobot_robot_so101_guarded needs LeRobot in the same Python environment. "
+        "Activate your LeRobot environment and install the plugin there.", name="lerobot") from e
 
 try:  # LeRobot >= 0.5
     from lerobot.robots.so_follower import SOFollowerRobotConfig as _BaseConfig

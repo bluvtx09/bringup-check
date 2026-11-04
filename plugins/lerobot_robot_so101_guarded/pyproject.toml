@@ -4,13 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lerobot_robot_so101_guarded"
-version = "0.2.2"
+version = "0.3.0"
 description = "SO-100/SO-101 follower for LeRobot with an overload guard that stops blocked servos from burning out"
 requires-python = ">=3.10"
+# LeRobot is deliberately NOT a dependency: the plugin installs into the LeRobot environment you
+# already have (any fork or version) and never replaces it, or the torch build it runs on.
 dependencies = [
-    "lerobot[feetech]",
     "bringup-check @ git+https://github.com/bluvtx09/bringup-check",
 ]
+
+[project.optional-dependencies]
+# only for a fresh environment without LeRobot: pip install "...[lerobot]"
+lerobot = ["lerobot[feetech]"]
 
 [tool.setuptools]
 packages = ["lerobot_robot_so101_guarded"]
