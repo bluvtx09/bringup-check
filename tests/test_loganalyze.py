@@ -50,3 +50,38 @@ def test_summary_and_cli(tmp_path, capsys):
     assert g.max_load == 50.0 and abs(g.seconds_high - 2.0) < 0.1 and g.count({"light_hold"}) == 1
     assert main(["--analyze-log", str(tmp_path / "a.csv"), "--lang", "en"]) == 0
     assert "[PASS] gripper_squeeze" in capsys.readouterr().out
+
+
+def _row(t, motor, goal, present, load, event="", mark="x"):
+    return {"t": f"{t:.3f}", "motor": motor, "goal": str(goal), "sent": str(goal), "present": str(present),
+            "load": str(load), "temp": "30", "released": "0", "strain": "0", "event": event, "mark": mark, "mode": "protect"}
+
+
+def test_sweep_with_a_joint_that_never_moves_says_check_hardware():
+    import math
+    from bringup_check.loganalyze import judge
+    rows = []
+    for k in range(300):
+        t = k / 30
+        g = 15 * math.sin(math.pi * t / 2)
+        rows.append(_row(t, "shoulder_pan", g, g, 10))                       # healthy
+        rows.append(_row(t, "wrist_roll", g, -0.2, max(-100, min(100, 8.3 * g)),
+                         "jammed" if k == 150 else "", "sweep"))             # stuck at -0.2
+    v = judge("sweep", rows)
+    assert not v.passed and v.status == "hardware" and v.label == "CHECK HARDWARE"
+    assert "wrist_roll did not move at all" in v.reasons[0] and "shoulder_pan" not in v.reasons[0]
+
+
+def test_soft_squeeze_that_never_loads_the_gripper_is_inconclusive_not_fail():
+    from bringup_check.loganalyze import judge
+    rows = [_row(k / 30, "gripper", 3.0, 7.0 if k > 10 else 30.0, 20.0 if k > 10 else 60.0) for k in range(240)]
+    v = judge("gripper_squeeze", rows)
+    assert not v.passed and v.status == "inconclusive" and v.label == "INCONCLUSIVE"
+    assert "rigid object" in v.reasons[-1]
+
+
+def test_squeeze_that_stays_loaded_without_the_guard_stepping_in_is_a_real_fail():
+    from bringup_check.loganalyze import judge
+    rows = [_row(k / 30, "gripper", 3.0, 6.0, 40.0) for k in range(240)]   # 40 % load, gap 3 % (< 5 % threshold)
+    v = judge("gripper_squeeze", rows)
+    assert not v.passed and v.status == "" and v.label == "FAIL"

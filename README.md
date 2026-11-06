@@ -88,6 +88,7 @@ The guard is a drop-in LeRobot robot type. It watches load, position and tempera
 - **the gripper** keeps a *light* grip just past the contact point, so the object isn't dropped;
 - a joint that is merely **carrying the arm's weight** is left alone — the guard checks this with a small 2° probe before acting, so the arm doesn't droop;
 - it hands control back as soon as you move the leader away from the obstacle.
+- A joint that is blocked in **both** directions at the same spot (seized, clamped, or a stuck position sensor) is reported as jammed and is not pushed more than 2° either way until it moves again. Found on a real SO-ARM101 in Seeed's test: without this, a jammed wrist spent 13 of 30 seconds at 90%+ load.
 
 Install it into the environment where LeRobot already runs (any version or fork). It does **not** install, upgrade or replace LeRobot or torch, so a custom setup (for example a Jetson with NVIDIA's torch build) stays as it is.
 

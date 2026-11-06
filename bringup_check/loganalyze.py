@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .guard import GuardConfig
 
-INTERVENE = {"backoff", "light_hold"}
+INTERVENE = {"backoff", "light_hold", "jammed"}
 TESTS = ("gripper_squeeze", "wrist_block", "hold_pose", "sweep")
 
 
@@ -97,6 +97,31 @@ class Verdict:
     test: str
     passed: bool
     reasons: list[str]
+    status: str = ""     # "" | "hardware": a joint did not move at all | "inconclusive": the test never got going
+
+    @property
+    def label(self) -> str:
+        if self.passed:
+            return "PASS"
+        return {"hardware": "CHECK HARDWARE", "inconclusive": "INCONCLUSIVE"}.get(self.status, "FAIL")
+
+
+def _ranges(rows: list[dict], motor: str) -> tuple[float, float]:
+    """(commanded range, present range) of one motor in these rows."""
+    goal = [v for r in rows if r["motor"] == motor and (v := _f(r.get("goal"))) is not None and v == v]
+    pres = [v for r in rows if r["motor"] == motor and (v := _f(r.get("present"))) is not None and v == v]
+    span = lambda xs: (max(xs) - min(xs)) if xs else 0.0
+    return span(goal), span(pres)
+
+
+def stuck_motors(rows: list[dict], min_command: float = 10.0, max_motion: float = 1.0) -> dict[str, tuple[float, float]]:
+    """Motors commanded over a wide range that did not move: jammed, or a stuck position sensor."""
+    out = {}
+    for m in dict.fromkeys(r["motor"] for r in rows):
+        cmd, moved = _ranges(rows, m)
+        if cmd >= min_command and moved < max_motion:
+            out[m] = (cmd, moved)
+    return out
 
 
 def judge(test: str, rows: list[dict], config: GuardConfig | None = None) -> Verdict:
@@ -112,8 +137,26 @@ def judge(test: str, rows: list[dict], config: GuardConfig | None = None) -> Ver
         first = rel(g.first(INTERVENE)) if g else None
         ok = first is not None and first <= 6.0
         reasons.append(f"gripper intervention at {first:.1f} s" if first is not None else "no gripper intervention")
+        cfg = config or GuardConfig()
+        thr = cfg.param("gripper", "load_threshold")
+        if first is None:
+            # Did the squeeze ever load the gripper? Look at the second half of the phase, once it settled.
+            grip = [r for r in rows if r["motor"] == "gripper"]
+            tail = grip[len(grip) // 2:]
+            loads = sorted(abs(_f(r["load"]) or 0.0) for r in tail)
+            gaps = sorted(abs((_f(r["goal"]) or 0.0) - (_f(r["present"]) or 0.0)) for r in tail)
+            if loads:
+                load90, gap = loads[int(0.9 * (len(loads) - 1))], gaps[len(gaps) // 2]
+                gthr = cfg.param("gripper", "gap_threshold")
+                if load90 < thr:
+                    reasons.append(f"the object never loaded the gripper enough to count as blocked: it settled at "
+                                   f"{load90:.0f}% load and a {gap:.1f}% gap (guard thresholds {thr:.0f}% and {gthr:.0f}%). "
+                                   f"Repeat with a rigid object, such as a wooden block")
+                    return Verdict(test, False, reasons, "inconclusive")
+                reasons.append(f"the gripper stayed at {load90:.0f}% load with a {gap:.1f}% gap "
+                               f"(gap threshold {gthr:.0f}%), and the guard did not step in")
+            return Verdict(test, False, reasons)
         # after the guard steps in, the load should stay below its threshold
-        thr = (config or GuardConfig()).param("gripper", "load_threshold")
         after = [abs(_f(r["load"]) or 0) for r in rows
                  if r["motor"] == "gripper" and first is not None and (_f(r["t"]) - t0) > first + 1.0]
         if after:
@@ -133,11 +176,18 @@ def judge(test: str, rows: list[dict], config: GuardConfig | None = None) -> Ver
         return Verdict(test, ok and heavy == 0, reasons)
 
     if test in ("hold_pose", "sweep"):
-        n = sum(m.count(INTERVENE) for m in s.motors.values())
+        stuck = stuck_motors(rows)
+        n = sum(m.count(INTERVENE) for name, m in s.motors.items() if name not in stuck)
         heavy = sum(m.count({"heavy_hold"}) for m in s.motors.values())
-        reasons.append(f"{n} intervention(s) where none should happen")
+        for name, (cmd, moved) in stuck.items():
+            reasons.append(f"{name} did not move at all (moved {moved:.1f} while commanded over {cmd:.0f}): it is jammed "
+                           f"or its position sensor is stuck. Turn it by hand with torque off. The guard stepping in on "
+                           f"it ({s.motors[name].count(INTERVENE)}x) is correct")
+        reasons.append(f"{n} intervention(s) where none should happen" + (" on the other joints" if stuck else ""))
         if heavy:
             reasons.append(f"{heavy} heavy-hold check(s) (allowed: the guard correctly stepped back out)")
+        if stuck:
+            return Verdict(test, False, reasons, "hardware")
         return Verdict(test, n == 0, reasons)
 
     raise ValueError(f"unknown test: {test}")

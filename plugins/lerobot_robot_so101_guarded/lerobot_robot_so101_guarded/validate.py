@@ -266,7 +266,8 @@ def main(argv=None) -> int:
     print(t("val.result"))
     results = verdicts(log, runner.notes)
     for v in results:
-        print(f"[{'PASS' if v.passed else 'FAIL'}] {v.test}: " + "; ".join(v.reasons))
+        label = getattr(v, "label", None) or ("PASS" if v.passed else "FAIL")   # older bringup-check: no label
+        print(f"[{label}] {v.test}: " + "; ".join(v.reasons))
     print(t("val.share", path=Path(log).resolve()))
     try:    # older bringup-check versions have no send module; the validation result stands either way
         from bringup_check.send import guard_validation_data, offer

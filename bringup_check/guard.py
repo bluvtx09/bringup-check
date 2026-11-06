@@ -58,6 +58,9 @@ class GuardConfig:
     resume_margin: float = 1.0        # resume once the command is this far back from the hold point
     probe_s: float = 0.3              # how long to probe whether a stalled joint is blocked or holding weight
     probe_step: float = 2.0           # how far to ease the command back while probing (deg)
+    jam_window: float = 10.0          # s: blocked both ways within this time at the same spot = jammed
+    jam_span: float = 1.0             # how close (deg or %) the two blocked positions must be
+    jam_free: float = 1.5             # a jammed joint that moves this far is free again
     temp_warn: float = 55.0           # °C
     temp_stop: float = 63.0           # °C, stop pushing (firmware limit is usually 70)
     temp_resume: float = 55.0         # °C, allow pushing again
@@ -111,13 +114,18 @@ class _MotorState:
     hot: bool = False
     too_hot: bool = False
     temp: float | None = None
+    block_seen: dict = field(default_factory=dict)  # push direction -> [position, seconds ago] of a blocked push
+    dir_strain: float = 0.0           # strain built up in the current push direction only
+    cur_dir: int = 0
+    jammed: bool = False              # blocked in both directions at the same spot: it does not move at all
+    jam_at: float | None = None
 
 
 class OverloadGuard:
     def __init__(self, config: GuardConfig | None = None):
         self.cfg = config or GuardConfig()
         self.state: dict[str, _MotorState] = {}
-        self.stats = {"cycles": 0, "backoffs": 0, "warnings": 0}
+        self.stats = {"cycles": 0, "backoffs": 0, "warnings": 0, "jams": 0}
 
     def _st(self, motor: str) -> _MotorState:
         return self.state.setdefault(motor, _MotorState())
@@ -167,11 +175,61 @@ class OverloadGuard:
                     st.too_hot = False
                     events.append(Event("info", "cooled", motor, t("guard.cooled", m=motor, t=st.temp), {"temp": st.temp}))
 
+            # a joint that is blocked in BOTH directions at the same spot does not move at all
+            # (seized, clamped, or its position sensor is stuck). Backing off one way only pushes
+            # it into the other side, so stop pushing either way and tell the operator.
+            for d in list(st.block_seen):
+                st.block_seen[d][1] += dt
+                if st.block_seen[d][1] > cfg.jam_window:
+                    del st.block_seen[d]
+            if st.jammed:
+                if abs(r.present - st.jam_at) >= cfg.jam_free:   # it moved: free again
+                    st.jammed = False
+                    st.jam_at = None
+                    st.block_seen.clear()
+                    st.strain = 0.0
+                    st.warned = False
+                    events.append(Event("info", "unjammed", motor, t("guard.unjammed", m=motor)))
+                else:
+                    if cfg.mode == "protect":
+                        out[motor] = min(max(goal, st.jam_at - cfg.probe_step), st.jam_at + cfg.probe_step)
+                    continue
+
             # strain: seconds of pushing, weighted by how hard
             if blocked:
                 st.strain += dt * min(load, 100.0) / 100.0
             else:
                 st.strain = max(0.0, st.strain - cfg.decay * dt)
+
+            # per-direction strain: total strain carries over when the push reverses, which would
+            # make a joint that is merely pulled back off an obstacle look blocked both ways
+            d = 1 if gap > 0 else -1
+            if blocked:
+                if d != st.cur_dir:
+                    st.cur_dir, st.dir_strain = d, 0.0
+                st.dir_strain += dt * min(load, 100.0) / 100.0
+            else:
+                st.dir_strain = max(0.0, st.dir_strain - cfg.decay * dt)
+
+            if blocked and st.dir_strain >= cfg.warn_after:
+                st.block_seen[d] = [r.present, 0.0]
+                other = st.block_seen.get(-d)
+                if other is not None and abs(other[0] - r.present) <= cfg.jam_span:
+                    st.jammed = True
+                    st.jam_at = r.present
+                    st.released = False
+                    st.confirmed = False
+                    st.probe_from = None
+                    st.hold_at = None
+                    st.strain = st.dir_strain = 0.0
+                    self.stats["jams"] += 1
+                    protect = cfg.mode == "protect"
+                    events.append(Event("act" if protect else "warn", "jammed", motor,
+                                        t("guard.jammed" if protect else "guard.jammed_warn", m=motor, load=load),
+                                        {"load": load, "at": r.present}))
+                    if protect:
+                        out[motor] = min(max(goal, st.jam_at - cfg.probe_step), st.jam_at + cfg.probe_step)
+                    continue
 
             if not st.warned and st.strain >= cfg.warn_after:
                 st.warned = True

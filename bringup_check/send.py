@@ -124,7 +124,8 @@ def first_run_data(res) -> dict:
 
 def guard_validation_data(log_path, verdicts, notes=None) -> dict:
     from .loganalyze import load_rows, summarize
-    out = {"verdicts": [{"test": v.test, "passed": bool(v.passed), "reasons": [str(r)[:200] for r in v.reasons]}
+    out = {"verdicts": [{"test": v.test, "passed": bool(v.passed), "status": str(getattr(v, "status", "")),
+                         "reasons": [str(r)[:300] for r in v.reasons]}
                         for v in verdicts],
            "notes": {str(k): str(v) for k, v in (notes or {}).items()}}
     rows = load_rows(log_path)

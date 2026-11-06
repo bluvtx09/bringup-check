@@ -140,6 +140,11 @@ MSG: dict[str, dict[str, str]] = {
         "guard.hot": "[가드] {m} 온도 {t:.0f}°C — 오래 버티게 하지 말고 쉬게 하세요.",
         "guard.too_hot": "[가드] {m} 온도 {t:.0f}°C — 과열 직전입니다. 밀고 있으면 멈추게 하고, 팔을 받침 위에 내려 식히세요.",
         "guard.cooled": "[가드] {m} 온도가 {t:.0f}°C로 내려갔습니다.",
+        "guard.jammed": "[가드] {m}가 같은 자리에서 양쪽 방향 모두 막혀 전혀 움직이지 않습니다(부하 {load:.0f}%). 어느 쪽으로도 세게 밀지 않게 했습니다. "
+                        "모터 힘을 빼고 손으로 돌려 보세요. 뻑뻑하면 나사·케이블·부품 끼임, 부드럽게 돌면 서보(기어나 위치 센서) 고장일 수 있습니다.",
+        "guard.jammed_warn": "[가드·경고 모드] {m}가 같은 자리에서 양쪽 방향 모두 막혀 전혀 움직이지 않습니다(부하 {load:.0f}%). "
+                             "모터 힘을 빼고 손으로 돌려 확인하세요. 보호 모드였다면 미는 힘을 제한했을 상황입니다.",
+        "guard.unjammed": "[가드] {m}가 다시 움직여서 정상적으로 따라갑니다.",
         "guard.summary": "[가드] {cycles}회 확인 · 경고 {warnings}회 · 개입 {backoffs}회",
         "guard.log": "[가드] 기록 저장: {path}",
         "gdemo.verdict_act": "가드가 개입함",
@@ -332,6 +337,12 @@ MSG: dict[str, dict[str, str]] = {
         "guard.hot": "[guard] {m} is at {t:.0f}°C. Don't keep it loaded for long; let it rest.",
         "guard.too_hot": "[guard] {m} is at {t:.0f}°C, close to overheating. Stop pushing and rest the arm on a support to cool it.",
         "guard.cooled": "[guard] {m} cooled down to {t:.0f}°C.",
+        "guard.jammed": "[guard] {m} is blocked in both directions at the same spot and does not move at all ({load:.0f}% load), "
+                        "so the guard stopped pushing it either way. Turn it by hand with torque off: if it is stiff, look for a tight "
+                        "screw, a trapped cable or a rubbing part; if it turns freely, the servo (gears or position sensor) may be faulty.",
+        "guard.jammed_warn": "[guard, warn-only] {m} is blocked in both directions at the same spot and does not move at all "
+                             "({load:.0f}% load). Check it by hand with torque off. Protect mode would have limited its push.",
+        "guard.unjammed": "[guard] {m} moves again and is following normally.",
         "guard.summary": "[guard] {cycles} cycles · {warnings} warning(s) · {backoffs} intervention(s)",
         "guard.log": "[guard] log saved: {path}",
         "gdemo.verdict_act": "guard stepped in",

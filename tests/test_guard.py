@@ -1,4 +1,5 @@
 import copy
+import math
 
 import pytest
 
@@ -115,3 +116,58 @@ def test_guard_demo_cli_runs(capsys):
     assert main(["--guard-demo", "--lang", "en"]) == 0
     out = capsys.readouterr().out
     assert "gripper_squeeze" in out and "guard stepped in" in out and "not from a real SO-101" in out
+
+
+def _jammed_sweep(guard, seconds=12.0, free_after=None):
+    """wrist_roll commanded +/-15 deg (2 s half period); the joint is stuck at 0 until `free_after`."""
+    present, sent, kinds, hi = 0.0, 0.0, [], 0.0
+    sent_while_jammed = []
+    for k in range(int(seconds / DT)):
+        t = k * DT
+        goal = 15.0 * math.sin(math.pi * t / 2.0)
+        free = free_after is not None and t >= free_after
+        if free:
+            present += max(-3.0, min(3.0, sent - present))       # follows the command
+            load = 5.0
+        else:
+            load = max(-100.0, min(100.0, 8.3 * (sent - present)))  # pushes, never moves
+        out, ev = guard.step({"wrist_roll": goal}, {"wrist_roll": Reading(present, load)}, DT)
+        sent = out["wrist_roll"]
+        kinds += [e.kind for e in ev]
+        if guard.state["wrist_roll"].jammed:
+            sent_while_jammed.append(sent)
+        if abs(load) >= 90:
+            hi += DT
+    return kinds, hi, sent_while_jammed
+
+
+def test_joint_blocked_both_ways_is_reported_as_jammed_and_not_pushed():
+    g = OverloadGuard()
+    kinds, hi, sent = _jammed_sweep(g)
+    assert "jammed" in kinds and g.stats["jams"] == 1
+    assert sent and all(abs(s) <= g.cfg.probe_step + 1e-9 for s in sent)   # never pushed more than 2 deg
+    assert hi < 3.0     # the old guard kept it at >=90 % load for ~45 % of a sweep like this
+
+
+def test_jammed_joint_that_frees_up_follows_again():
+    g = OverloadGuard()
+    kinds, _, _ = _jammed_sweep(g, seconds=14.0, free_after=8.0)
+    assert "jammed" in kinds and "unjammed" in kinds
+    assert not g.state["wrist_roll"].jammed
+
+
+def test_warn_mode_reports_a_jam_but_never_changes_the_command():
+    g = OverloadGuard(GuardConfig(mode="warn"))
+    present = 0.0
+    for k in range(int(12.0 / DT)):
+        goal = 15.0 * math.sin(math.pi * k * DT / 2.0)
+        out, _ = g.step({"wrist_roll": goal}, {"wrist_roll": Reading(present, max(-100.0, min(100.0, 8.3 * goal)))}, DT)
+        assert out["wrist_roll"] == goal
+    assert g.stats["jams"] == 1
+
+
+@pytest.mark.parametrize("mode", ["protect", "warn"])
+def test_one_sided_obstacles_and_normal_use_never_look_jammed(mode):
+    for sc in SCENARIOS.values():
+        r = run(sc, guard=True, config=GuardConfig(mode=mode))
+        assert not any(e.kind == "jammed" for _, e in r.events), sc.name
