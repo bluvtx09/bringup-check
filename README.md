@@ -118,7 +118,7 @@ bringup-check --guard-demo
    guard stayed out
 ```
 
-Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config, motor bus and plugin-loading code it relies on is unchanged in 0.6.2), robot factory and `send_action`, with the serial bus replaced by a simple servo model. **Not yet tested on a physical arm**; thresholds are starting points. Each cycle adds two bus reads (a few ms).
+Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config, motor bus and plugin-loading code it relies on is unchanged in 0.6.2), robot factory and `send_action`, with the serial bus replaced by a simple servo model, and on one real SO-ARM101 (Seeed Studio, LeRobot 0.4.4): holding a pose and a blocked wrist passed, and the test found the jammed-joint case above. One arm is not enough to settle the thresholds; they are still starting points. Each cycle adds two bus reads (a few ms).
 
 ### Validate it on your arm (10 minutes, follower only — no leader needed)
 
@@ -193,7 +193,7 @@ Anything else: [open an issue](https://github.com/bluvtx09/bringup-check/issues/
 
 - Supports Feetech STS/SMS serial-bus servos (STS3215 in SO-100/101). Dynamixel and other buses are not supported yet.
 - PWM hobby servos (SG90, MG996R…) report nothing back, so they can't be diagnosed.
-- Not yet run on a physical SO-101. Tests use a stand-in bus with the official SDK's call shapes, and scenarios that imitate real incidents.
+- Run on one physical SO-101 so far (Seeed Studio, guard validation only); the diagnostics have not been run on real hardware yet. Other tests use a stand-in bus with the official SDK's call shapes, and scenarios that imitate real incidents.
 
 ## Roadmap
 
