@@ -32,7 +32,6 @@ shylee/so100_pengripG
 dongdong123123/so101_stack_cubes
 sreetz-nv/so101_teleop_vials_rack_left
 Haribot099/so101_60
-dharak22/so101-red-cube-3D-print_20260923_110916
 shylee/so100_pengripF
 rerun/so101-pick-and-place
 OkzRIKU/so101-turn-up-drone
