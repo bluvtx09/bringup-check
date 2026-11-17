@@ -142,12 +142,12 @@ bringup-check --scan-dataset ~/.cache/huggingface/lerobot/me/my_dataset --json s
 
 It downloads only `meta/info.json` and the parquet files (no videos), lists per joint how often and how long it was blocked, names the longest holds by episode and time so you can check them in the video, and flags joints where the leader and follower look calibrated differently.
 
-### What 53 public SO-100/101 datasets show
+### What 52 public SO-100/101 datasets show
 
-Scanned 7,731 episodes (about 33 hours) from 53 public datasets on the Hub ([list](studies/public_datasets.txt)), using the guard's thresholds (gap ≥ 5 gripper / 8 arm, nearly still, ≥ 1.5 s):
+Scanned 7,533 episodes (about 32 hours) from 52 public datasets on the Hub ([list](studies/public_datasets.txt)), using the guard's thresholds (gap ≥ 5 gripper / 8 arm, nearly still, ≥ 1.5 s):
 
-- **Blocked gripper squeezes are routine.** 53 % of episodes contain at least one, in 40 of the 53 datasets. Median length 3.3 s; 16 % last over 5 s, 92 over 10 s, the longest 16.4 s.
-- **Arm joints are rarely blocked.** About 3 % of episodes, concentrated in a few datasets.
+- **Blocked gripper squeezes are routine.** 51 % of episodes contain at least one, in 39 of the 52 datasets. Median length 3.3 s; 14.5 % last over 5 s, 87 over 10 s, the longest 16.4 s.
+- **Arm joints are rarely blocked.** About 3.5 % of episodes, in 14 datasets; 70 % of those holds are at the wrist (flex or roll).
 - **Leader/follower calibration mismatches show up too**, on 8 joints across 6 datasets.
 
 Two caveats. Public datasets are mostly recorded by experienced users and then curated, so they understate what happens during a first teleoperation. And datasets carry no load or temperature, so these are position-only candidates. Still, the result points the same way a kit seller's support data did: the gripper squeezing an object is where follower servos spend the most time pushing hard.
