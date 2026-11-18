@@ -213,6 +213,13 @@ MSG: dict[str, dict[str, str]] = {
         "scan.sum_cols": "데이터셋                                      에피소드 그리퍼막힘 해당에피 5초+  팔막힘 어긋남 최장초",
         "scan.offset_title": "막힘이 아니라 리더·팔로워 캘리브레이션이 어긋난 것으로 보이는 경우(에피소드 내내 차이가 남):",
         "scan.offset_line": "{joint}: 에피소드 {n}개(최대 차이 {gap:.1f}) · {eps}. 두 팔의 캘리브레이션을 다시 맞춰 보세요.",
+        "clean.out_exists": "{path} 폴더가 이미 있고 비어 있지 않습니다. 새 폴더 이름을 지정하세요.",
+        "clean.no_joint": "'{joints}'에 해당하는 관절이 데이터셋에 없습니다.",
+        "clean.head": "정제한 데이터셋을 {out}에 썼습니다.",
+        "clean.frames": "고친 프레임 {changed}개 / 전체 {total}개 ({share:.1f}%) · 에피소드 {eps}개 / {all}개",
+        "clean.gap": "고친 프레임에서 명령과 실제 위치의 차이: 평균 {before:.1f} → {after:.1f} (여유 {margin:g})",
+        "clean.keep": "막힌 구간이 없는 에피소드 {n}개 / {all}개 (목록은 cleaning_report.json의 keep_episodes)",
+        "clean.note": "막힌 구간의 명령만 '실제 위치 + 여유'로 당겼고, 영상과 나머지 값은 그대로입니다. 캘리브레이션 어긋남으로 보이는 구간은 건드리지 않았습니다.",
     },
     "en": {
         "label.named": "motor {i} ({name})",
@@ -411,6 +418,13 @@ MSG: dict[str, dict[str, str]] = {
         "scan.sum_cols": "dataset                                      episodes grip_holds eps_hit  5s+  arm_holds offset longest_s",
         "scan.offset_title": "Not blocked but probably a leader/follower calibration mismatch (the gap lasts the whole episode):",
         "scan.offset_line": "{joint}: {n} episode(s) (gap up to {gap:.1f}) · {eps}. Try recalibrating the two arms to match.",
+        "clean.out_exists": "{path} already exists and is not empty. Choose a new folder.",
+        "clean.no_joint": "No joint matching '{joints}' in this dataset.",
+        "clean.head": "Wrote the cleaned dataset to {out}.",
+        "clean.frames": "Frames changed: {changed} of {total} ({share:.1f}%) · episodes: {eps} of {all}",
+        "clean.gap": "Command-to-position gap in the changed frames: mean {before:.1f} -> {after:.1f} (margin {margin:g})",
+        "clean.keep": "Episodes with no blocked hold: {n} of {all} (listed as keep_episodes in cleaning_report.json)",
+        "clean.note": "Only commands inside blocked holds were pulled back to 'position + margin'; videos and all other values are unchanged. Holds that look like a calibration offset were left alone.",
     },
 }
 

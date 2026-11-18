@@ -152,6 +152,19 @@ Scanned 7,533 episodes (about 32 hours) from 52 public datasets on the Hub ([lis
 
 Two caveats. Public datasets are mostly recorded by experienced users and then curated, so they understate what happens during a first teleoperation. And datasets carry no load or temperature, so these are position-only candidates. Still, the result points the same way a kit seller's support data did: the gripper squeezing an object is where follower servos spend the most time pushing hard.
 
+### Clean a dataset before training (new in v0.9, experimental)
+
+A policy copies the commands it is trained on. Inside a blocked gripper hold the recorded command keeps asking to close past the object, so the policy learns to push past contact. `--clean-dataset` writes a copy of a dataset where only those commands are pulled back to the recorded position plus a small margin, in the same direction. The margin stays because a position-controlled servo grips in proportion to the gap: a gap of zero would mean no grip at all.
+
+```bash
+bringup-check --clean-dataset lerobot/svla_so100_stacking --out ./stacking_clean --margin 3
+```
+
+- Downloads the whole dataset (videos too) and copies it; only the `action` values inside blocked holds change, and the action statistics are recomputed to match.
+- Holds that look like a calibration offset are left alone, and so are arm joints unless you pass `--clean-joints all`.
+- `cleaning_report.json` lists what changed and `keep_episodes`, the episodes with no blocked hold (for a "drop whole episodes" baseline with LeRobot's `--dataset.episodes`).
+- Checked on `lerobot/svla_so100_stacking`: 5,994 of 22,956 frames (26%) changed, gripper only, images identical, and the copy loads in LeRobot 0.7.0. Whether a policy trained on it grips better is the open research question; results will be posted here.
+
 ## Please share your result
 
 The thresholds are starting points taken from public reports, **not yet validated on real robots**. If you run it on your robot — healthy or not — please open an issue with:

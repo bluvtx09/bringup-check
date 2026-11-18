@@ -96,6 +96,14 @@ def main(argv=None) -> int:
                    help="find moments where the follower was blocked in recorded LeRobot datasets "
                         "(local folders or Hugging Face dataset ids; no robot needed)")
     p.add_argument("--top", type=int, default=10, help="with --scan-dataset: how many of the longest holds to list")
+    p.add_argument("--clean-dataset", metavar="DATASET",
+                   help="write a copy of a LeRobot dataset where commands inside blocked holds are pulled back "
+                        "to the recorded position plus a margin (for robot-learning experiments)")
+    p.add_argument("--out", metavar="FOLDER", help="with --clean-dataset: where to write the cleaned copy")
+    p.add_argument("--margin", type=float, default=3.0,
+                   help="with --clean-dataset: how far past the recorded position a command may stay (dataset units)")
+    p.add_argument("--clean-joints", choices=["gripper", "all"], default="gripper",
+                   help="with --clean-dataset: clean only the gripper (default) or every joint")
     p.add_argument("--first-run", action="store_true",
                    help="first-run safety mode: check power and calibration, then move each motor a little, "
                         "starting at low torque and stopping on overload")
@@ -108,6 +116,14 @@ def main(argv=None) -> int:
     a = p.parse_args(argv)
     if a.lang:
         set_lang(a.lang)
+
+    if a.clean_dataset:
+        from .datasetclean import clean, render as render_clean
+        if not a.out:
+            p.error("--clean-dataset needs --out FOLDER")
+        rep = clean(a.clean_dataset, a.out, margin=a.margin, joints=a.clean_joints)
+        print(render_clean(rep))
+        return 0
 
     if a.scan_dataset:
         from .datasetscan import render as render_scan, render_summary, scan, to_json as scan_json
