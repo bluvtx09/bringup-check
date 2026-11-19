@@ -118,7 +118,7 @@ bringup-check --guard-demo
    guard stayed out
 ```
 
-Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config, motor bus and plugin-loading code it relies on is unchanged in 0.6.2), robot factory and `send_action`, with the serial bus replaced by a simple servo model, and on one real SO-ARM101 (Seeed Studio, LeRobot 0.4.4): holding a pose and a blocked wrist passed, and the test found the jammed-joint case above. One arm is not enough to settle the thresholds; they are still starting points. Each cycle adds two bus reads (a few ms).
+Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config, motor bus and plugin-loading code it relies on is unchanged in 0.6.2), robot factory and `send_action`, with the serial bus replaced by a simple servo model, and on two real SO-ARM101 arms (Seeed Studio, LeRobot 0.4.4): the sweep, holding a pose and a blocked wrist passed on both (wrist back-off at 4.0 s), and an earlier run found the jammed-joint case above. On the gripper the guard never had to step in: LeRobot itself configures the SO-100/101 gripper servo to 50 % of max torque and 25 % once overloaded, so a squeeze peaks near 50 % load and then settles near 20 % on its own. `so101-guard-validate` reports that as `PASS (SERVO LIMIT)`. Two arms are not enough to settle the thresholds; they are still starting points. Each cycle adds two bus reads (a few ms).
 
 ### Validate it on your arm (10 minutes, follower only — no leader needed)
 
@@ -126,7 +126,7 @@ Tested against LeRobot 0.6.1's own config parsing (the SO follower, robot config
 so101-guard-validate --port /dev/ttyACM0 --id my_arm
 ```
 
-Four guided tests: a gentle **sweep** and a stretched-out **hold** (the guard must stay out), the **wrist pushing into a book** and the **gripper squeezing a sponge** (it must step in). Positions are taught by hand with torque off, so nothing assumes which way is down; every move is speed-limited. It prints PASS/FAIL per test and saves a CSV — attaching that CSV to an issue is the single most useful thing you can do for this project. `bringup-check --analyze-log file.csv` summarises any guard log.
+Four guided tests: a gentle **sweep** and a stretched-out **hold** (the guard must stay out), the **wrist pushing into a book** and the **gripper squeezing an object** (the grip must ease, by the guard or by the servo's own overload protection). Positions are taught by hand with torque off, so nothing assumes which way is down; every move is speed-limited. It prints PASS/FAIL per test and saves a CSV — attaching that CSV to an issue is the single most useful thing you can do for this project. `bringup-check --analyze-log file.csv` summarises any guard log.
 
 ## Scan recorded datasets for blocked moments (new in v0.5, no robot needed)
 

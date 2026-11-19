@@ -208,7 +208,7 @@ def main(argv=None) -> int:
         for mark in dict.fromkeys(r.get("mark", "") for r in rows):
             if mark in TESTS:
                 v = judge(mark, [r for r in rows if r.get("mark") == mark])
-                print(f"[{'PASS' if v.passed else 'FAIL'}] {mark}: " + "; ".join(v.reasons))
+                print(f"[{v.label}] {mark}: " + "; ".join(v.reasons))
         return 0
 
     if a.demo:

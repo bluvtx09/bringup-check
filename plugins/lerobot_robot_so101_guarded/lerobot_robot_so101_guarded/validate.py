@@ -7,7 +7,8 @@ Four short tests, each logged under its own phase in one CSV:
   sweep            gentle back-and-forth on every joint        -> guard must stay out
   hold_pose        you pose the arm stretched out, it holds it  -> guard must stay out
   wrist_block      wrist pushes into a book you place           -> guard must back off
-  gripper_squeeze  gripper closes past a sponge you place       -> guard must ease to a light grip
+  gripper_squeeze  gripper closes past an object you place      -> grip must ease to a light hold
+                   (by the guard, or by the servo's own overload protection)
 
 Positions that depend on your setup (block, sponge, pose) are taught by hand with torque
 off, so the script never assumes which direction is "down". Every move is rate-limited.
@@ -40,7 +41,7 @@ MAX_STEP = 3.0
 MSG["ko"].update({
     "val.intro": "가드 실물 검증을 시작합니다. 시험은 4가지이고 10분쯤 걸립니다. 언제든 Ctrl+C로 멈출 수 있습니다.",
     "val.no_calib": "캘리브레이션 파일이 없습니다: {path}\n먼저 lerobot-calibrate로 이 팔을 캘리브레이션하세요.",
-    "val.base": "팔을 캘리브레이션 때의 'ㄴ자' 가운데 자세로 두세요. 준비되면 Enter: ",
+    "val.base": "모든 모터의 힘을 뺐습니다. 팔을 캘리브레이션 때의 'ㄴ자' 가운데 자세로 옮긴 뒤, 받친 채로 Enter: ",
     "val.hold_arm": "곧 모터 힘을 뺍니다. 팔이 떨어지지 않게 손으로 받쳐 주세요. 받쳤으면 Enter: ",
     "val.phase": "\n--- 시험: {name} ---",
     "val.sweep": "모든 관절이 ±{a:.0f}° 정도 천천히 왕복합니다({s:.0f}초). 주변을 비워 두세요. Enter: ",
@@ -62,7 +63,7 @@ MSG["ko"].update({
 MSG["en"].update({
     "val.intro": "Starting the guard hardware validation: 4 tests, about 10 minutes. Ctrl+C stops at any time.",
     "val.no_calib": "No calibration file at {path}\nCalibrate this arm with lerobot-calibrate first.",
-    "val.base": "Put the arm in the middle 'L' pose used for calibration. Press Enter when ready: ",
+    "val.base": "Torque is off on every motor. Move the arm into the middle 'L' pose used for calibration, keep supporting it, press Enter: ",
     "val.hold_arm": "Torque is about to turn off. Support the arm with your hand so it doesn't fall. Press Enter: ",
     "val.phase": "\n--- test: {name} ---",
     "val.sweep": "Every joint will move slowly by about ±{a:.0f}° for {s:.0f} s. Keep the area clear. Press Enter: ",
@@ -199,9 +200,13 @@ class Runner:
 
     def all(self, tests=TESTS) -> None:
         print(t("val.intro"))
+        # connect() leaves torque on (LeRobot's configure() re-enables it), so make the arm limp
+        # before asking for the start pose, then hold that pose without a jump.
+        self.ask(t("val.hold_arm"))
+        self.limp(ALL)
         self.ask(t("val.base"))
-        base = self.present()
-        self.goal = dict(base)
+        self.stiff(ALL)
+        base = dict(self.goal)
         try:
             for name in tests:
                 print(t("val.phase", name=name))

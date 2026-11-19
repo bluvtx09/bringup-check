@@ -140,3 +140,23 @@ def test_guard_in_warn_mode_fails_the_blocking_tests(tmp_path):
     robot.disconnect()
     (v,) = verdicts(tmp_path / "w.csv", runner.notes)
     assert not v.passed
+
+
+def test_start_pose_is_asked_with_torque_off_and_held_without_a_jump(tmp_path):
+    """Seeed found the arm was still stiff when asked for the 'L' pose (connect() re-enables torque)."""
+    arm = SimArm()
+    robot, clock = make(tmp_path, arm)
+    seen = {}
+    user = scripted_user(arm)
+
+    def ask(msg):
+        if "'L' pose" in msg:
+            seen["torque"] = dict(arm.torque)
+            arm.sim["elbow_flex"].x = 12.0          # the person moves the limp arm into the pose
+        return user(msg)
+    runner = Runner(robot, ask=ask, sleep=clock.sleep, clock=clock)
+    runner.all([])
+    robot.disconnect()
+    assert seen["torque"] == {m: False for m in arm.torque}
+    assert all(arm.torque.values())                  # stiff again afterwards
+    assert abs(arm.sim["elbow_flex"].x - 12.0) < 0.5  # held where the person left it

@@ -85,3 +85,13 @@ def test_squeeze_that_stays_loaded_without_the_guard_stepping_in_is_a_real_fail(
     rows = [_row(k / 30, "gripper", 3.0, 6.0, 40.0) for k in range(240)]   # 40 % load, gap 3 % (< 5 % threshold)
     v = judge("gripper_squeeze", rows)
     assert not v.passed and v.status == "" and v.label == "FAIL"
+
+
+def test_squeeze_eased_by_the_servos_own_overload_protection_passes_as_servo_limit():
+    """Seeed, two SO-101 arms: peak ~50 % load, then ~20 % with a ~30 % gap, guard never released (LeRobot
+    sets the gripper to 50 % max torque and 25 % when overloaded)."""
+    from bringup_check.loganalyze import judge
+    rows = [_row(k / 30, "gripper", 3.0, 33.8, 50.0 if k < 60 else 20.0) for k in range(240)]
+    v = judge("gripper_squeeze", rows)
+    assert v.passed and v.status == "servo" and v.label == "PASS (SERVO LIMIT)"
+    assert "overload protection" in v.reasons[-1]

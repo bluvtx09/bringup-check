@@ -98,11 +98,12 @@ class Verdict:
     passed: bool
     reasons: list[str]
     status: str = ""     # "" | "hardware": a joint did not move at all | "inconclusive": the test never got going
+    #                      | "servo": passed because the servo's own overload protection eased the load
 
     @property
     def label(self) -> str:
         if self.passed:
-            return "PASS"
+            return "PASS (SERVO LIMIT)" if self.status == "servo" else "PASS"
         return {"hardware": "CHECK HARDWARE", "inconclusive": "INCONCLUSIVE"}.get(self.status, "FAIL")
 
 
@@ -148,6 +149,16 @@ def judge(test: str, rows: list[dict], config: GuardConfig | None = None) -> Ver
             if loads:
                 load90, gap = loads[int(0.9 * (len(loads) - 1))], gaps[len(gaps) // 2]
                 gthr = cfg.param("gripper", "gap_threshold")
+                peak = max((abs(_f(r["load"]) or 0.0) for r in grip), default=0.0)
+                guard_idle = not any(int(_f(r.get("released")) or 0) for r in grip)
+                if load90 < thr and gap >= gthr and peak >= thr + 15 and guard_idle:
+                    # Loaded hard at first, then the load dropped while the jaws still lagged far behind the
+                    # command: the servo's own overload protection eased it. LeRobot configures the SO-100/101
+                    # gripper to 50% of max torque and 25% once overloaded, so no guard step was needed.
+                    reasons.append(f"the servo's own overload protection eased the squeeze: peak {peak:.0f}% load, "
+                                   f"then {load90:.0f}% with a {gap:.1f}% gap (LeRobot sets the gripper to 50% max "
+                                   f"torque and 25% when overloaded), so the guard did not need to step in")
+                    return Verdict(test, True, reasons, "servo")
                 if load90 < thr:
                     reasons.append(f"the object never loaded the gripper enough to count as blocked: it settled at "
                                    f"{load90:.0f}% load and a {gap:.1f}% gap (guard thresholds {thr:.0f}% and {gthr:.0f}%). "
