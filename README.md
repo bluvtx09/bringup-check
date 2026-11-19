@@ -150,7 +150,9 @@ Scanned 7,533 episodes (about 32 hours) from 52 public datasets on the Hub ([lis
 - **Arm joints are rarely blocked.** About 3.5 % of episodes, in 14 datasets; 70 % of those holds are at the wrist (flex or roll).
 - **Leader/follower calibration mismatches show up too**, on 8 joints across 6 datasets.
 
-Two caveats. Public datasets are mostly recorded by experienced users and then curated, so they understate what happens during a first teleoperation. And datasets carry no load or temperature, so these are position-only candidates. Still, the result points the same way a kit seller's support data did: the gripper squeezing an object is where follower servos spend the most time pushing hard.
+Two caveats. Public datasets are mostly recorded by experienced users and then curated, so they understate what happens during a first teleoperation. And datasets carry no load or temperature, so these are position-only candidates. Still, the result points the same way a kit seller's support data did: the gripper squeezing an object is where follower servos spend the most time blocked. (On real arms the gripper servo then eases itself to a light grip, because LeRobot caps its torque; see the hardware results above.)
+
+Full write-up with figures: [What 32 hours of public SO-101 data say about blocked servos](studies/blocked-servos-2026-11/README.md)
 
 ### Clean a dataset before training (new in v0.9, experimental)
 
