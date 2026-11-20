@@ -53,6 +53,7 @@ bringup-check --port /dev/ttyACM0 --hold-test 5
 
 - `--calib auto`는 LeRobot 캘리브레이션 파일을 찾아, 지금 연결된 팔과 맞는 파일을 골라 씁니다.
 - `--ids`는 **데이지 체인 순서대로** 적습니다(기본 `1,2,3,4,5,6`). 단선 위치 추정이 이 순서를 씁니다.
+- `--profile`로 어떤 팔인지 알려 주면, 서보 모델과 전원 검사가 그 팔의 값으로 확인합니다. `so101`(기본)은 STS3215 여섯 개를 예상합니다. `so-arm102-follower`와 `so-arm102-leader`는 Robonine SO-ARM 102용입니다. 팔로워는 STS3235 / STS3250 / STS3250 / STS3235 / STS3215 / STS3215에 12V, 리더는 7.4V STS3215 여섯 개에 5V이며, [공개 사양](https://github.com/roboninecom/SO-ARM-102/blob/main/docs/specifications.md)에서 가져왔습니다. 맞는 프로필을 쓰면 두 팔의 전원 어댑터를 바꿔 꽂은 경우를 어느 쪽이든 잡아냅니다. 실제 SO-ARM 102로는 아직 확인하지 않았습니다.
 - `--lang en|ko`로 언어를 고릅니다(기본은 시스템 언어).
 - 모터에 힘을 넣는 옵션은 `--hold-test`와 아래의 `--first-run`뿐입니다. `--hold-test`는 목표를 현재 위치로 맞춘 뒤 켜서 튀지 않고, 끝나면 원래 토크 상태로 되돌립니다. 그래도 팔을 받칠 준비를 하세요.
 - `[문제]`가 있으면 종료 코드 1을 돌려줍니다.

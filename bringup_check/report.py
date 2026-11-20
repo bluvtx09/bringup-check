@@ -65,7 +65,10 @@ def to_json(s: Snapshot, findings: list[Finding], hold: dict | None = None, meta
 
 def share_summary(s: Snapshot, findings: list[Finding], meta: dict) -> str:
     """A compact, copy-pasteable block for a GitHub issue (no file paths or port names)."""
-    lines = ["```", f"bringup-check {meta.get('version', '')}  ids={s.expected}"]
+    head = f"bringup-check {meta.get('version', '')}  ids={s.expected}"
+    if meta.get("profile", "so101") != "so101":
+        head += f"  profile={meta['profile']}"
+    lines = ["```", head]
     for i in s.expected:
         if i not in s.responding:
             lines.append(f"{i}: no answer")

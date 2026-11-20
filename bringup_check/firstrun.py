@@ -45,6 +45,7 @@ class FirstRunConfig:
     sag_frac: float = 0.15                    # supply may drop this share below idle before we stop
     temp_margin: int = 10                     # stop this many °C below the servo's limit
     gripper_ids: frozenset = frozenset({6})
+    expected_model: object = 777               # int, {id: model} (profiles.py) or None
 
 
 @dataclass
@@ -111,7 +112,8 @@ class FirstRun:
 
     def check_power_and_calibration(self) -> bool:
         snap = take_snapshot(self.bus, self.ids)
-        findings = run_all(snap, self.names, self.calib, gripper_ids=self.cfg.gripper_ids)
+        findings = run_all(snap, self.names, self.calib, gripper_ids=self.cfg.gripper_ids,
+                           expected_model=self.cfg.expected_model)
         power = [f for f in findings if f.code.split(".")[0] in ("bus", "volt", "status", "temp") and f.level == PROBLEM]
         self.say(t("fr.step1"))
         if power:

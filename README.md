@@ -53,6 +53,7 @@ bringup-check --port /dev/ttyACM0 --hold-test 5
 
 - `--calib auto` finds your LeRobot calibration file and picks the one that matches the arm on the bus.
 - `--ids` lists motor IDs **in daisy-chain order** (default `1,2,3,4,5,6`); the broken-cable guess uses this order.
+- `--profile` says which arm this is, so the servo-model and supply checks use the right values. `so101` (default) expects six STS3215. `so-arm102-follower` and `so-arm102-leader` are for Robonine's SO-ARM 102: the follower has STS3235 / STS3250 / STS3250 / STS3235 / STS3215 / STS3215 on 12 V, the leader six 7.4 V STS3215 on 5 V, taken from [their public specs](https://github.com/roboninecom/SO-ARM-102/blob/main/docs/specifications.md). With the matching profile, a swapped power supply is reported for either arm. Not yet confirmed on a real SO-ARM 102.
 - `--lang en|ko` sets the language (default: your system language).
 - `--hold-test` and `--first-run` (below) are the only options that power the motors. `--hold-test` sets each goal to the current position first, so nothing jumps, and restores the original torque state afterwards. Still, be ready to support the arm.
 - Exit code is 1 when a `[PROBLEM]` is found.

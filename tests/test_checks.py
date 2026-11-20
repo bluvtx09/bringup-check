@@ -148,3 +148,53 @@ def test_single_low_motor_fix_names_it_and_gives_both_checks(lang, words):
     f = next(f for f in findings if f.code == "volt.spread")
     assert f.motors == [3]
     assert all(w.lower() in f.fix.lower() for w in words), f.fix
+
+
+# --- arm profiles (SO-ARM 102: mixed servo models, 12 V follower / 5 V leader) ---
+
+from bringup_check.profiles import PROFILES, STS3235, STS3250
+from bringup_check.scenarios import FakeBus, healthy_motors
+
+
+def _arm102_follower(volts_x10=120):
+    m = healthy_motors()
+    for i, model in PROFILES["so-arm102-follower"].models.items():
+        m[i]["Model_Number"] = model
+        m[i]["Present_Voltage"] = volts_x10
+    return m
+
+
+def _diag(motors, profile):
+    p = PROFILES[profile]
+    _, findings, _, _ = diagnose(FakeBus(motors, {}), IDS, SO101_NAMES, None, p.servo_rating,
+                                 expected_model=p.models)
+    return findings
+
+
+def test_so_arm102_follower_with_its_own_profile_is_clean():
+    codes = [f.code for f in _diag(_arm102_follower(), "so-arm102-follower") if f.level in (PROBLEM, WARN)]
+    assert "bus.model" not in codes and not any(c.startswith("volt.rating") for c in codes)
+
+
+def test_so_arm102_follower_under_the_default_profile_flags_the_mixed_servos():
+    f = [f for f in _diag(_arm102_follower(), "so101") if f.code == "bus.model"]
+    assert f and f[0].motors == [1, 2, 3, 4]
+
+
+def test_so_arm102_wrong_servo_in_a_slot_names_the_expected_model():
+    m = _arm102_follower()
+    m[2]["Model_Number"] = STS3235                     # a base servo fitted at the shoulder
+    f = [f for f in _diag(m, "so-arm102-follower") if f.code == "bus.model"]
+    assert f and f[0].motors == [2] and "STS3250" in f[0].detail and "STS3235" in f[0].detail
+
+
+def test_so_arm102_swapped_supplies_are_caught_both_ways():
+    follower_on_5v = _diag(_arm102_follower(volts_x10=50), "so-arm102-follower")
+    assert any(f.code == "volt.rating_low" for f in follower_on_5v)
+    leader = healthy_motors()
+    for i in leader:
+        leader[i]["Present_Voltage"] = 120                # leader plugged into the follower's 12 V supply
+    assert any(f.code == "volt.rating_high" and f.level == PROBLEM for f in _diag(leader, "so-arm102-leader"))
+    for i in leader:
+        leader[i]["Present_Voltage"] = 50                 # its own 5 V supply is fine
+    assert not any(f.code.startswith("volt.rating") for f in _diag(leader, "so-arm102-leader"))

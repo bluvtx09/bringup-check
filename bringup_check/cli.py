@@ -20,6 +20,7 @@ from .bus import BusError, FeetechBus
 from .calib import candidates, load_calibration, pick
 from .checks import LEVEL_ORDER, PROBLEM, SO101_NAMES, run_all, run_hold_test, take_snapshot
 from .messages import get_lang, safe_console, set_lang, t
+from .profiles import PROFILES
 from .report import render, share_summary, to_json
 from .scenarios import build, heading, make_bus
 
@@ -52,7 +53,7 @@ def _parse_ids(text: str) -> list[int]:
 
 
 def diagnose(bus, ids, names, calib=None, servo_rating=None, hold_seconds=0.0, title="", sleep=None,
-             gripper_ids=frozenset({6}), calib_roots=None, log=print):
+             gripper_ids=frozenset({6}), calib_roots=None, log=print, expected_model=777):
     """Run the checks. `calib` may be a dict, a path, "auto", or None."""
     snap = take_snapshot(bus, ids)
     if calib == "auto":
@@ -64,7 +65,7 @@ def diagnose(bus, ids, names, calib=None, servo_rating=None, hold_seconds=0.0, t
             log(t("cli.calib_many", path=path) if n > 1 else t("cli.calib_found", path=path))
     elif isinstance(calib, (str, Path)):
         calib = load_calibration(Path(calib).expanduser())
-    findings = run_all(snap, names, calib, servo_rating, gripper_ids=gripper_ids)
+    findings = run_all(snap, names, calib, servo_rating, gripper_ids=gripper_ids, expected_model=expected_model)
     hold = None
     if hold_seconds and snap.responding:
         kw = {"sleep": sleep} if sleep else {}
@@ -82,6 +83,8 @@ def main(argv=None) -> int:
     p.add_argument("--ids", default="1,2,3,4,5,6", help="motor IDs in daisy-chain order (default 1-6)")
     p.add_argument("--calib", help='LeRobot calibration JSON path, or "auto" to find the matching one')
     p.add_argument("--servo-rating", type=float, help="servo voltage rating (7.4 or 12) to check the supply against")
+    p.add_argument("--profile", choices=sorted(PROFILES), default="so101",
+                   help="which arm this is: expected servo model per ID and supply rating (default so101)")
     p.add_argument("--gripper-ids", default="6")
     p.add_argument("--hold-test", type=float, default=0.0, metavar="SECONDS",
                    help="power the motors and hold the current pose for N seconds while checking supply and current")
@@ -149,6 +152,8 @@ def main(argv=None) -> int:
     ids = _parse_ids(a.ids)
     names = SO101_NAMES if ids == [1, 2, 3, 4, 5, 6] else {}
     grippers = frozenset(_parse_ids(a.gripper_ids))
+    prof = PROFILES[a.profile]
+    rating = a.servo_rating if a.servo_rating is not None else prof.servo_rating
 
     if a.guard_demo:
         print(guard_demo_text())
@@ -186,7 +191,8 @@ def main(argv=None) -> int:
             else:
                 calib = load_calibration(Path(calib).expanduser())
             ask = (lambda prompt: True) if a.yes else (lambda prompt: input(prompt).strip().lower() == "y")
-            res = FirstRun(bus, ids, names, calib, FirstRunConfig(gripper_ids=grippers), confirm=ask).run()
+            res = FirstRun(bus, ids, names, calib, FirstRunConfig(gripper_ids=grippers, expected_model=prof.models),
+                           confirm=ask).run()
         finally:
             bus.close()
         if a.json:
@@ -233,13 +239,15 @@ def main(argv=None) -> int:
         print(f"[{t('level.problem')}] {e}")
         return 2
     try:
-        snap, findings, hold, text = diagnose(bus, ids, names, a.calib, a.servo_rating, a.hold_test,
-                                              gripper_ids=grippers)
+        if a.profile != "so101":
+            print(t("cli.profile", name=a.profile))
+        snap, findings, hold, text = diagnose(bus, ids, names, a.calib, rating, a.hold_test,
+                                              gripper_ids=grippers, expected_model=prof.models)
     finally:
         bus.close()
     print(text)
     meta = {"tool": "bringup-check", "version": __version__,
-            "time": datetime.now(timezone.utc).isoformat(), "ids": ids}
+            "time": datetime.now(timezone.utc).isoformat(), "ids": ids, "profile": a.profile}
     if a.json:
         Path(a.json).write_text(to_json(snap, findings, hold, meta), encoding="utf-8")
         print(t("cli.json_saved", path=a.json))

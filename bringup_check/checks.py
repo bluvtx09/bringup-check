@@ -95,7 +95,8 @@ def label(i: int, names: dict[int, str]) -> str:
 
 # --- rules -------------------------------------------------------------------
 
-def check_bus(s: Snapshot, names, expected_model: int | None = 777) -> list[Finding]:
+def check_bus(s: Snapshot, names, expected_model: int | dict[int, int] | None = 777) -> list[Finding]:
+    """expected_model: one model number for every ID, a {id: model} map (see profiles.py), or None."""
     out: list[Finding] = []
     if not s.responding:
         return [make(PROBLEM, "bus.none", s.expected)]
@@ -111,9 +112,13 @@ def check_bus(s: Snapshot, names, expected_model: int | None = 777) -> list[Find
             for m in missing:
                 out.append(make(PROBLEM, "bus.missing_one", [m], m=label(m, names)))
     if expected_model is not None:
-        odd = [i for i, m in s.responding.items() if m != expected_model]
+        per_id = isinstance(expected_model, dict)
+        want = lambda i: expected_model.get(i) if per_id else expected_model
+        odd = sorted(i for i, m in s.responding.items() if want(i) is not None and m != want(i))
         if odd:
-            got = ", ".join(f"{label(i, names)}={MODEL_NAMES.get(s.responding[i], s.responding[i])}" for i in odd)
+            name = lambda m: MODEL_NAMES.get(m, m)
+            got = ", ".join(f"{label(i, names)}={name(s.responding[i])}"
+                            + (f" ({t('bus.model.expected', m=name(want(i)))})" if per_id else "") for i in odd)
             out.append(make(WARN, "bus.model", odd, detail=got))
     return out
 
@@ -264,7 +269,7 @@ def tidy(findings: list[Finding]) -> list[Finding]:
 
 
 def run_all(s: Snapshot, names=None, calib=None, servo_rating=None, gripper_ids=frozenset({6}),
-            wheel_ids=frozenset(), expected_model=777) -> list[Finding]:
+            wheel_ids=frozenset(), expected_model: int | dict[int, int] | None = 777) -> list[Finding]:
     names = names or {}
     findings = check_bus(s, names, expected_model)
     findings += check_voltage(s, names, servo_rating)

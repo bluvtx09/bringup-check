@@ -40,7 +40,7 @@ SNAPSHOT_REGS = [
     "Status", "Moving", "Present_Current",
 ]
 
-MODEL_NAMES = {777: "STS3215", 2825: "STS3250", 11272: "SM8512BL"}
+MODEL_NAMES = {777: "STS3215", 2057: "STS3235", 2825: "STS3250", 11272: "SM8512BL"}
 
 # Bits of the Status register (address 65), lowest bit first.
 STATUS_BITS = ["voltage", "sensor", "temperature", "current", "angle", "overload"]

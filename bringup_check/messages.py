@@ -32,6 +32,8 @@ MSG: dict[str, dict[str, str]] = {
         "bus.missing_one.fix": "모터 ID 설정 단계에서 이 모터에 ID가 제대로 들어갔는지 확인하세요. 맞다면 이 서보의 고장을 의심하세요.",
         "bus.model.title": "예상과 다른 서보 모델이 섞여 있습니다",
         "bus.model.fix": "부품 목록과 실제 장착된 서보를 비교하세요.",
+        "bus.model.expected": "예상: {m}",
+        "cli.profile": "프로필: {name} (서보 모델과 정격 전압을 이 기준으로 확인합니다)",
         # voltage
         "volt.supply.title": "전원 전압 약 {v:.1f}V",
         "volt.supply.detail": "모터들이 보고한 전압의 중앙값입니다.",
@@ -244,6 +246,8 @@ MSG: dict[str, dict[str, str]] = {
         "bus.missing_one.fix": "Check that this motor got its ID during the motor setup step. If it did, suspect this servo.",
         "bus.model.title": "Unexpected servo model on the bus",
         "bus.model.fix": "Compare the parts list with the servos actually fitted.",
+        "bus.model.expected": "expected {m}",
+        "cli.profile": "Profile: {name} (servo models and voltage rating are checked against it)",
         "volt.supply.title": "Supply about {v:.1f} V",
         "volt.supply.detail": "Median of the voltages the motors report.",
         "volt.over.title": "{m} over-voltage {v:.1f} V (protection limit {lim:.1f} V)",

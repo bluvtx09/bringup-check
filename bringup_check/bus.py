@@ -90,7 +90,9 @@ class FakeBus:
         self.writes: list[tuple[int, str, int]] = []
 
     def ping(self, motor_id: int) -> int | None:
-        return self.model if motor_id in self.motors else None
+        if motor_id not in self.motors:
+            return None
+        return self.motors[motor_id].get("Model_Number", self.model)   # per-motor model when a test sets one
 
     def read(self, motor_id: int, name: str) -> int | None:
         regs = self.motors.get(motor_id)
