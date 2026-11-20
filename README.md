@@ -209,7 +209,7 @@ Anything else: [open an issue](https://github.com/bluvtx09/bringup-check/issues/
 
 - Supports Feetech STS/SMS serial-bus servos (STS3215 in SO-100/101). Dynamixel and other buses are not supported yet.
 - PWM hobby servos (SG90, MG996R…) report nothing back, so they can't be diagnosed.
-- Run on one physical SO-101 so far (Seeed Studio, guard validation only); the diagnostics have not been run on real hardware yet. Other tests use a stand-in bus with the official SDK's call shapes, and scenarios that imitate real incidents.
+- Run on two physical SO-ARM101 arms so far (Seeed Studio, guard validation only); the diagnostics have not been run on real hardware yet. Other tests use a stand-in bus with the official SDK's call shapes, and scenarios that imitate real incidents.
 
 ## Roadmap
 
