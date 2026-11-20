@@ -1,0 +1,1302 @@
+[
+ {
+  "source": "lerobot/svla_so100_pickplace",
+  "units": "degrees",
+  "episodes": 50,
+  "frames": 19631,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 47,
+    "hold_frames": 4051.0
+   },
+   "5": {
+    "episodes_with_hold": 34,
+    "hold_frames": 2847.0
+   },
+   "8": {
+    "episodes_with_hold": 16,
+    "hold_frames": 1266.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "lerobot/svla_so100_sorting",
+  "units": "degrees",
+  "episodes": 52,
+  "frames": 35713,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 43,
+    "hold_frames": 6882.0
+   },
+   "5": {
+    "episodes_with_hold": 16,
+    "hold_frames": 1732.0
+   },
+   "8": {
+    "episodes_with_hold": 1,
+    "hold_frames": 113.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "lerobot/svla_so100_stacking",
+  "units": "degrees",
+  "episodes": 55,
+  "frames": 22955,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 50,
+    "hold_frames": 6344.0
+   },
+   "5": {
+    "episodes_with_hold": 49,
+    "hold_frames": 5994.0
+   },
+   "8": {
+    "episodes_with_hold": 20,
+    "hold_frames": 2271.0
+   },
+   "12": {
+    "episodes_with_hold": 4,
+    "hold_frames": 421.0
+   }
+  }
+ },
+ {
+  "source": "lerobot/svla_so101_pickplace",
+  "units": "normalized",
+  "episodes": 50,
+  "frames": 11939,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 24,
+    "hold_frames": 1329.0
+   },
+   "5": {
+    "episodes_with_hold": 19,
+    "hold_frames": 1048.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "SO-101-robot-learning/so101_pick_place",
+  "units": "normalized",
+  "episodes": 50,
+  "frames": 17870,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 46,
+    "hold_frames": 3730.0
+   },
+   "5": {
+    "episodes_with_hold": 50,
+    "hold_frames": 4034.0
+   },
+   "8": {
+    "episodes_with_hold": 25,
+    "hold_frames": 1933.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "Embodied-AI-6/blue_so101_color_blocks_10ep_v1_20260526_175604",
+  "units": "normalized",
+  "episodes": 10,
+  "frames": 6534,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 7,
+    "hold_frames": 1704.0
+   },
+   "5": {
+    "episodes_with_hold": 7,
+    "hold_frames": 1689.0
+   },
+   "8": {
+    "episodes_with_hold": 7,
+    "hold_frames": 1597.0
+   },
+   "12": {
+    "episodes_with_hold": 6,
+    "hold_frames": 1473.0
+   }
+  }
+ },
+ {
+  "source": "kmg0620/so101_bomb_pick_place_v1",
+  "units": "degrees",
+  "episodes": 150,
+  "frames": 88782,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 144,
+    "hold_frames": 14315.0
+   },
+   "5": {
+    "episodes_with_hold": 144,
+    "hold_frames": 14292.0
+   },
+   "8": {
+    "episodes_with_hold": 142,
+    "hold_frames": 14094.0
+   },
+   "12": {
+    "episodes_with_hold": 135,
+    "hold_frames": 13273.0
+   }
+  }
+ },
+ {
+  "source": "hungho77/so101_left_arm_pick_red_cube_into_pot",
+  "units": "normalized",
+  "episodes": 50,
+  "frames": 37536,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 50,
+    "hold_frames": 9057.0
+   },
+   "5": {
+    "episodes_with_hold": 50,
+    "hold_frames": 8272.0
+   },
+   "8": {
+    "episodes_with_hold": 46,
+    "hold_frames": 6105.0
+   },
+   "12": {
+    "episodes_with_hold": 41,
+    "hold_frames": 4517.0
+   }
+  }
+ },
+ {
+  "source": "IlyaGusev/so101_pick_gum",
+  "units": "normalized",
+  "episodes": 155,
+  "frames": 27147,
+  "fps": 20.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 63,
+    "hold_frames": 2447.0
+   },
+   "5": {
+    "episodes_with_hold": 28,
+    "hold_frames": 1084.0
+   },
+   "8": {
+    "episodes_with_hold": 7,
+    "hold_frames": 252.0
+   },
+   "12": {
+    "episodes_with_hold": 5,
+    "hold_frames": 179.0
+   }
+  }
+ },
+ {
+  "source": "codywang/so101_pickup_test",
+  "units": "normalized",
+  "episodes": 30,
+  "frames": 4500,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "samanthalhy/so100_popcorn_2_transport",
+  "units": "normalized",
+  "episodes": 80,
+  "frames": 45450,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "dharak22/so101-red-cube-3D-print-clean",
+  "units": "degrees",
+  "episodes": 198,
+  "frames": 117795,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 197,
+    "hold_frames": 28819.0
+   },
+   "5": {
+    "episodes_with_hold": 198,
+    "hold_frames": 28698.0
+   },
+   "8": {
+    "episodes_with_hold": 197,
+    "hold_frames": 28163.0
+   },
+   "12": {
+    "episodes_with_hold": 197,
+    "hold_frames": 27742.0
+   }
+  }
+ },
+ {
+  "source": "witsense-ai/so101_pick_and_place_ring_33",
+  "units": "normalized",
+  "episodes": 33,
+  "frames": 18861,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 8,
+    "hold_frames": 955.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "Aaaay-0610/so101-test-1_20260923_182449",
+  "units": "normalized",
+  "episodes": 3,
+  "frames": 1733,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 3,
+    "hold_frames": 349.0
+   },
+   "5": {
+    "episodes_with_hold": 3,
+    "hold_frames": 347.0
+   },
+   "8": {
+    "episodes_with_hold": 3,
+    "hold_frames": 344.0
+   },
+   "12": {
+    "episodes_with_hold": 3,
+    "hold_frames": 338.0
+   }
+  }
+ },
+ {
+  "source": "MaxT90/so101-pick-place",
+  "units": "degrees",
+  "episodes": 50,
+  "frames": 22771,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "apayan/so100_ball8",
+  "units": "degrees",
+  "episodes": 104,
+  "frames": 110416,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 102,
+    "hold_frames": 33232.0
+   },
+   "5": {
+    "episodes_with_hold": 102,
+    "hold_frames": 33231.0
+   },
+   "8": {
+    "episodes_with_hold": 102,
+    "hold_frames": 33223.0
+   },
+   "12": {
+    "episodes_with_hold": 95,
+    "hold_frames": 30824.0
+   }
+  }
+ },
+ {
+  "source": "Loki0929/so100_lan",
+  "units": "degrees",
+  "episodes": 800,
+  "frames": 256044,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 397,
+    "hold_frames": 23762.0
+   },
+   "5": {
+    "episodes_with_hold": 296,
+    "hold_frames": 17405.0
+   },
+   "8": {
+    "episodes_with_hold": 25,
+    "hold_frames": 1477.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "Twu31/so101_hand_blue_napkin",
+  "units": "normalized",
+  "episodes": 101,
+  "frames": 40493,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 96,
+    "hold_frames": 7514.0
+   },
+   "5": {
+    "episodes_with_hold": 92,
+    "hold_frames": 7228.0
+   },
+   "8": {
+    "episodes_with_hold": 82,
+    "hold_frames": 6404.0
+   },
+   "12": {
+    "episodes_with_hold": 67,
+    "hold_frames": 5160.0
+   }
+  }
+ },
+ {
+  "source": "Deviant65/so101_redcube_20260925_154203",
+  "units": "normalized",
+  "episodes": 63,
+  "frames": 53428,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 60,
+    "hold_frames": 13402.0
+   },
+   "5": {
+    "episodes_with_hold": 59,
+    "hold_frames": 13065.0
+   },
+   "8": {
+    "episodes_with_hold": 53,
+    "hold_frames": 11221.0
+   },
+   "12": {
+    "episodes_with_hold": 29,
+    "hold_frames": 6263.0
+   }
+  }
+ },
+ {
+  "source": "witsense-ai/so101_longhorizon_dataset",
+  "units": "normalized",
+  "episodes": 250,
+  "frames": 110374,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "hungho77/so101-ai20k-multitask",
+  "units": "normalized",
+  "episodes": 455,
+  "frames": 221916,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 362,
+    "hold_frames": 45986.0
+   },
+   "5": {
+    "episodes_with_hold": 225,
+    "hold_frames": 30544.0
+   },
+   "8": {
+    "episodes_with_hold": 85,
+    "hold_frames": 8984.0
+   },
+   "12": {
+    "episodes_with_hold": 10,
+    "hold_frames": 1431.0
+   }
+  }
+ },
+ {
+  "source": "LUOSYrrrrr/so101_yellow_tape_v1_v21",
+  "units": "normalized",
+  "episodes": 50,
+  "frames": 24906,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "samsitol/so100_PnPacorn",
+  "units": "degrees",
+  "episodes": 150,
+  "frames": 84752,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 139,
+    "hold_frames": 13156.0
+   },
+   "5": {
+    "episodes_with_hold": 103,
+    "hold_frames": 9412.0
+   },
+   "8": {
+    "episodes_with_hold": 17,
+    "hold_frames": 1334.0
+   },
+   "12": {
+    "episodes_with_hold": 1,
+    "hold_frames": 64.0
+   }
+  }
+ },
+ {
+  "source": "shylee/so100_pengripA",
+  "units": "degrees",
+  "episodes": 300,
+  "frames": 58090,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "dharak22/so101-red-cube_20260908_113622",
+  "units": "degrees",
+  "episodes": 113,
+  "frames": 72809,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 113,
+    "hold_frames": 16564.0
+   },
+   "5": {
+    "episodes_with_hold": 112,
+    "hold_frames": 16443.0
+   },
+   "8": {
+    "episodes_with_hold": 110,
+    "hold_frames": 16041.0
+   },
+   "12": {
+    "episodes_with_hold": 100,
+    "hold_frames": 14641.0
+   }
+  }
+ },
+ {
+  "source": "sreetz-nv/so101_orange_manual_dr75_20260916",
+  "units": "degrees",
+  "episodes": 77,
+  "frames": 33746,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 68,
+    "hold_frames": 11228.0
+   },
+   "5": {
+    "episodes_with_hold": 74,
+    "hold_frames": 12141.0
+   },
+   "8": {
+    "episodes_with_hold": 74,
+    "hold_frames": 11980.0
+   },
+   "12": {
+    "episodes_with_hold": 73,
+    "hold_frames": 11426.0
+   }
+  }
+ },
+ {
+  "source": "Askel1419/so101_3_cup_no4",
+  "units": "normalized",
+  "episodes": 115,
+  "frames": 101858,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 90,
+    "hold_frames": 6669.0
+   },
+   "5": {
+    "episodes_with_hold": 88,
+    "hold_frames": 6555.0
+   },
+   "8": {
+    "episodes_with_hold": 76,
+    "hold_frames": 5443.0
+   },
+   "12": {
+    "episodes_with_hold": 25,
+    "hold_frames": 1808.0
+   }
+  }
+ },
+ {
+  "source": "JimmyPeng02/so100_test_6",
+  "units": "degrees",
+  "episodes": 40,
+  "frames": 35860,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 39,
+    "hold_frames": 4824.0
+   },
+   "5": {
+    "episodes_with_hold": 8,
+    "hold_frames": 1036.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "shubham4413/so100_smolvla_rc",
+  "units": "degrees",
+  "episodes": 160,
+  "frames": 77104,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 160,
+    "hold_frames": 20213.0
+   },
+   "5": {
+    "episodes_with_hold": 160,
+    "hold_frames": 20141.0
+   },
+   "8": {
+    "episodes_with_hold": 160,
+    "hold_frames": 19791.0
+   },
+   "12": {
+    "episodes_with_hold": 8,
+    "hold_frames": 724.0
+   }
+  }
+ },
+ {
+  "source": "legalaspro/so101-pick-and-place-cube-lerobot-30hz",
+  "units": "normalized",
+  "episodes": 51,
+  "frames": 19764,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "shylee/so100_pengripG",
+  "units": "degrees",
+  "episodes": 300,
+  "frames": 63435,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "dongdong123123/so101_stack_cubes",
+  "units": "normalized",
+  "episodes": 102,
+  "frames": 94840,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 102,
+    "hold_frames": 36717.0
+   },
+   "5": {
+    "episodes_with_hold": 90,
+    "hold_frames": 23082.0
+   },
+   "8": {
+    "episodes_with_hold": 46,
+    "hold_frames": 7850.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "sreetz-nv/so101_teleop_vials_rack_left",
+  "units": "normalized",
+  "episodes": 75,
+  "frames": 18250,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 70,
+    "hold_frames": 6236.0
+   },
+   "5": {
+    "episodes_with_hold": 72,
+    "hold_frames": 6332.0
+   },
+   "8": {
+    "episodes_with_hold": 72,
+    "hold_frames": 6226.0
+   },
+   "12": {
+    "episodes_with_hold": 60,
+    "hold_frames": 5260.0
+   }
+  }
+ },
+ {
+  "source": "Haribot099/so101_60",
+  "units": "degrees",
+  "episodes": 60,
+  "frames": 27418,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 54,
+    "hold_frames": 4642.0
+   },
+   "5": {
+    "episodes_with_hold": 49,
+    "hold_frames": 4237.0
+   },
+   "8": {
+    "episodes_with_hold": 43,
+    "hold_frames": 3680.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "shylee/so100_pengripF",
+  "units": "degrees",
+  "episodes": 300,
+  "frames": 59568,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 255,
+    "hold_frames": 17204.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "rerun/so101-pick-and-place",
+  "units": "degrees",
+  "episodes": 72,
+  "frames": 52796,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 68,
+    "hold_frames": 10003.0
+   },
+   "5": {
+    "episodes_with_hold": 28,
+    "hold_frames": 4330.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "OkzRIKU/so101-turn-up-drone",
+  "units": "normalized",
+  "episodes": 100,
+  "frames": 99621,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 32,
+    "hold_frames": 6729.0
+   },
+   "5": {
+    "episodes_with_hold": 69,
+    "hold_frames": 14930.0
+   },
+   "8": {
+    "episodes_with_hold": 95,
+    "hold_frames": 21137.0
+   },
+   "12": {
+    "episodes_with_hold": 100,
+    "hold_frames": 22004.0
+   }
+  }
+ },
+ {
+  "source": "hjkso1406/so101-3tasks-100eps",
+  "units": "normalized",
+  "episodes": 300,
+  "frames": 172991,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 261,
+    "hold_frames": 37011.0
+   },
+   "5": {
+    "episodes_with_hold": 220,
+    "hold_frames": 29113.0
+   },
+   "8": {
+    "episodes_with_hold": 134,
+    "hold_frames": 16493.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "dharak22/so101-red-cap-pick-place-demo-v2",
+  "units": "degrees",
+  "episodes": 50,
+  "frames": 36144,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 48,
+    "hold_frames": 6734.0
+   },
+   "5": {
+    "episodes_with_hold": 43,
+    "hold_frames": 5420.0
+   },
+   "8": {
+    "episodes_with_hold": 4,
+    "hold_frames": 518.0
+   },
+   "12": {
+    "episodes_with_hold": 4,
+    "hold_frames": 507.0
+   }
+  }
+ },
+ {
+  "source": "Loki0929/so100_duck",
+  "units": "degrees",
+  "episodes": 300,
+  "frames": 133320,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 23,
+    "hold_frames": 2042.0
+   },
+   "5": {
+    "episodes_with_hold": 20,
+    "hold_frames": 1751.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "SGPatil/so101_table_cleanup",
+  "units": "degrees",
+  "episodes": 41,
+  "frames": 80332,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 41,
+    "hold_frames": 13730.0
+   },
+   "5": {
+    "episodes_with_hold": 41,
+    "hold_frames": 9182.0
+   },
+   "8": {
+    "episodes_with_hold": 38,
+    "hold_frames": 5552.0
+   },
+   "12": {
+    "episodes_with_hold": 20,
+    "hold_frames": 1666.0
+   }
+  }
+ },
+ {
+  "source": "tshiamor/so101-long-horizon-datasetombo",
+  "units": "normalized",
+  "episodes": 30,
+  "frames": 39018,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 30,
+    "hold_frames": 10778.0
+   },
+   "5": {
+    "episodes_with_hold": 30,
+    "hold_frames": 10303.0
+   },
+   "8": {
+    "episodes_with_hold": 29,
+    "hold_frames": 7758.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "theconstruct-ai/so101_pickplace_auto_v1",
+  "units": "normalized",
+  "episodes": 181,
+  "frames": 114814,
+  "fps": 50.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "Jiamo0912/robocolosseum-so101-black-screwdriver-box-to-table-100episodes",
+  "units": "normalized",
+  "episodes": 100,
+  "frames": 23746,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 59,
+    "hold_frames": 3465.0
+   },
+   "5": {
+    "episodes_with_hold": 37,
+    "hold_frames": 2100.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "jccj/so100_block_in_cup",
+  "units": "degrees",
+  "episodes": 50,
+  "frames": 21782,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 32,
+    "hold_frames": 2860.0
+   },
+   "5": {
+    "episodes_with_hold": 14,
+    "hold_frames": 1227.0
+   },
+   "8": {
+    "episodes_with_hold": 3,
+    "hold_frames": 260.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "samsitol/so100_boarduni",
+  "units": "degrees",
+  "episodes": 101,
+  "frames": 90115,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 90,
+    "hold_frames": 19960.0
+   },
+   "5": {
+    "episodes_with_hold": 81,
+    "hold_frames": 18021.0
+   },
+   "8": {
+    "episodes_with_hold": 72,
+    "hold_frames": 15168.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "dharak22/so101-red-cube-3d_20260915_135646",
+  "units": "degrees",
+  "episodes": 80,
+  "frames": 45106,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 80,
+    "hold_frames": 8857.0
+   },
+   "5": {
+    "episodes_with_hold": 80,
+    "hold_frames": 8830.0
+   },
+   "8": {
+    "episodes_with_hold": 80,
+    "hold_frames": 8741.0
+   },
+   "12": {
+    "episodes_with_hold": 80,
+    "hold_frames": 8594.0
+   }
+  }
+ },
+ {
+  "source": "TeamIORobotics/so101_pickplace_v1",
+  "units": "normalized",
+  "episodes": 30,
+  "frames": 12024,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 4,
+    "hold_frames": 205.0
+   },
+   "5": {
+    "episodes_with_hold": 3,
+    "hold_frames": 158.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "shylee/so100_pengrip",
+  "units": "degrees",
+  "episodes": 300,
+  "frames": 56262,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ },
+ {
+  "source": "Aaaay-0610/so101-task-1",
+  "units": "normalized",
+  "episodes": 75,
+  "frames": 35614,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 75,
+    "hold_frames": 5714.0
+   },
+   "5": {
+    "episodes_with_hold": 75,
+    "hold_frames": 5658.0
+   },
+   "8": {
+    "episodes_with_hold": 75,
+    "hold_frames": 5569.0
+   },
+   "12": {
+    "episodes_with_hold": 75,
+    "hold_frames": 5423.0
+   }
+  }
+ },
+ {
+  "source": "maximilianofir/so101-left-rack-balanced-1000-dr-speed05-1-20261005",
+  "units": "degrees",
+  "episodes": 1000,
+  "frames": 328004,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 1000,
+    "hold_frames": 103594.0
+   },
+   "5": {
+    "episodes_with_hold": 1000,
+    "hold_frames": 103594.0
+   },
+   "8": {
+    "episodes_with_hold": 1000,
+    "hold_frames": 103594.0
+   },
+   "12": {
+    "episodes_with_hold": 1000,
+    "hold_frames": 103593.0
+   }
+  }
+ },
+ {
+  "source": "lucarrr/so100_pybullet_pickup_v3",
+  "units": "normalized",
+  "episodes": 41,
+  "frames": 75194,
+  "fps": 30.0,
+  "by_thr": {
+   "3": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "5": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "8": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   },
+   "12": {
+    "episodes_with_hold": 0,
+    "hold_frames": 0.0
+   }
+  }
+ }
+]

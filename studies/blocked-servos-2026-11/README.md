@@ -5,7 +5,7 @@
 ## TL;DR
 
 - I scanned **52 public SO-100/SO-101 datasets** on the Hub: **7,533 episodes, about 32 hours** of teleoperation.
-- **51% of episodes** contain at least one moment where the follower's gripper was commanded to close further but stayed put for 1.5 s or more. In other words, it was squeezing something. This happens in 39 of the 52 datasets.
+- **51% of episodes** contain at least one moment where the follower's gripper was commanded to close further but stayed put for 1.5 s or more. In other words, it was squeezing something. This happens in 39 of the 52 datasets. The share depends on the gap threshold: 62% at 3 and 28% at 12 (see the per-unit check below).
 - Arm joints are rarely blocked (3.5% of episodes). When they are, **70% of the time it's the wrist**.
 - Datasets don't record load, so I also looked at one real arm. In Seeed Studio's test, a **jammed wrist_roll spent 13.4 of 30 seconds above 90% load**, while its position stayed within 0.05°.
 
@@ -19,7 +19,7 @@ That gap is visible in recorded data, with no robot needed. A lot of SO-101 data
 
 - **Datasets:** 52 public SO-100/SO-101 datasets, picked to cover different tasks and teams ([list](https://github.com/bluvtx09/bringup-check/blob/main/studies/public_datasets.txt)). The list originally had 53, but one turned out to be a trimmed copy of another, so I removed it.
 - **What counts as a blocked hold:** the gap between command and position is at least 5 units for the gripper or 8 for an arm joint, the joint is nearly still, and this lasts at least 1.5 s. These are the same conditions the overload guard in bringup-check uses.
-- **Units:** 26 datasets store degrees and 26 store LeRobot's normalized range, and I used the same thresholds for both. Treat the numbers as approximate.
+- **Units:** 26 datasets store degrees and 26 store LeRobot's normalized range, and I used the same thresholds for both. Treat the numbers as approximate; a per-unit check is in Finding 1.
 - **What was downloaded:** only `meta/info.json` and the parquet files, no videos.
 
 You can reproduce everything with one command (see the end of this post).
@@ -34,6 +34,28 @@ Across all episodes, 51% contain at least one blocked gripper hold. The average 
 - **13 datasets:** none at all.
 
 Same robot, very different behavior. My guess is that it comes down to how the leader gripper is calibrated relative to the follower, and how hard operators habitually squeeze. I haven't verified this. If you recognize your dataset on either end, I'd love to hear what your setup looks like.
+
+### Does the split survive per unit?
+
+*Added on Nov 20 after a question on the Hugging Face forum.*
+
+Half the datasets store the gripper in degrees and half in LeRobot's normalized 0–100 range, and the same threshold of 5 was used for both. "5 degrees" and "5% of the gripper range" are not the same physical gap, so part of the split could come from the units rather than the setups. To check, I re-ran the scan separately for each unit at four thresholds:
+
+| Gap threshold | Degree datasets (26): 80%+ / none | Normalized datasets (26): 80%+ / none | All episodes with a gripper hold |
+|---|---|---|---|
+| 3 | 19 / 4 | 10 / 7 | 62% |
+| **5 (used above)** | **13 / 5** | **9 / 8** | **51%** |
+| 8 | 9 / 8 | 8 / 11 | 39% |
+| 12 | 7 / 14 | 5 / 15 | 28% |
+
+![Share of episodes with a blocked gripper hold, by unit and threshold](fig5_by_unit.png)
+
+Two things come out of this:
+
+- **The split is not only a unit effect.** At every threshold, both groups have datasets where most episodes have a hold and datasets with none.
+- **The headline number depends on the threshold, and more so for normalized data.** Going from 5 to 12, degree datasets drop from 54% to 35% of episodes, while normalized datasets drop from 47% to 16%. So "51%" is best read as "about half, at the guard's default threshold".
+
+A few datasets move the other way as the threshold rises. At a low threshold, a steady gap can make the whole episode look like a leader/follower calibration offset, which the scan reports separately instead of as a hold.
 
 ## Finding 2: most squeezes are short, with a long tail
 
@@ -70,7 +92,7 @@ The gripper turned out differently, and the reason is worth knowing if you work 
 ## Limitations
 
 - **Curated data:** public datasets are mostly recorded by experienced users and then cleaned up, so they probably understate what happens in a first teleoperation session.
-- **Shared thresholds:** the same thresholds are applied to degree and normalized datasets.
+- **Shared thresholds:** the same thresholds are applied to degree and normalized datasets. The per-unit check shows the split holds in both, but the overall share moves a lot with the threshold.
 - **Position only:** a "hold" means the follower didn't move while commanded to. It doesn't mean high load.
 - **Few arms:** the load evidence comes from a few real arms, all at one company, which is not enough to set thresholds.
 
@@ -87,6 +109,6 @@ If you have an SO-101, the guard runs as a drop-in robot type (`so101_follower_g
 
 ## Thanks
 
-Thanks to Seeed Studio for running the hardware tests on their SO-ARM101 arms and reporting a bug in the validation script, and to everyone who published the datasets listed above.
+Thanks to Seeed Studio for running the hardware tests on their SO-ARM101 arms and reporting a bug in the validation script, to SheilaMayoAI on the Hugging Face forum for asking about the units, and to everyone who published the datasets listed above.
 
 Code, scanner and raw results: [github.com/bluvtx09/bringup-check](https://github.com/bluvtx09/bringup-check)

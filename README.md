@@ -146,7 +146,7 @@ It downloads only `meta/info.json` and the parquet files (no videos), lists per 
 
 Scanned 7,533 episodes (about 32 hours) from 52 public datasets on the Hub ([list](studies/public_datasets.txt)), using the guard's thresholds (gap ≥ 5 gripper / 8 arm, nearly still, ≥ 1.5 s):
 
-- **Blocked gripper squeezes are routine.** 51 % of episodes contain at least one, in 39 of the 52 datasets. Median length 3.3 s; 14.5 % last over 5 s, 87 over 10 s, the longest 16.4 s.
+- **Blocked gripper squeezes are routine.** 51 % of episodes contain at least one, in 39 of the 52 datasets (at the default gap threshold of 5; 62 % at 3 and 28 % at 12, see the write-up for a per-unit check). Median length 3.3 s; 14.5 % last over 5 s, 87 over 10 s, the longest 16.4 s.
 - **Arm joints are rarely blocked.** About 3.5 % of episodes, in 14 datasets; 70 % of those holds are at the wrist (flex or roll).
 - **Leader/follower calibration mismatches show up too**, on 8 joints across 6 datasets.
 
